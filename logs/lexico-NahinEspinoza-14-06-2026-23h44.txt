@@ -1,0 +1,173 @@
+============================================================
+  LOG DE ANÁLISIS LÉXICO - PROYECTO LUA
+  Integrante : Nahin Espinoza (nahinespinoza)
+  Aporte     : Números, Strings y Operadores
+  Archivo    : /workspaces/Analizador-Lexico-Sintactico-y-Semantico/algoritmo1.lua
+  Fecha/Hora : 14/06/2026 23:44:52
+============================================================
+
+>>> TOKENS RECONOCIDOS
+N°    TIPO           VALOR                          LÍNEA
+----------------------------------------------------------
+1     ID             entero                         8
+2     ASSIGN         =                              8
+3     NUMBER         42                             8
+4     ID             flotante                       9
+5     ASSIGN         =                              9
+6     NUMBER         3.14                           9
+7     ID             hexadecimal                    10
+8     ASSIGN         =                              10
+9     NUMBER         255                            10
+10    ID             cientifico                     11
+11    ASSIGN         =                              11
+12    NUMBER         2500.0                         11
+13    ID             cien                           12
+14    ASSIGN         =                              12
+15    NUMBER         100                            12
+16    ID             nombre                         15
+17    ASSIGN         =                              15
+18    STRING         "Nahin Espinoza"               15
+19    ID             carrera                        16
+20    ASSIGN         =                              16
+21    STRING         "Computacion"                  16
+22    ID             frase                          17
+23    ASSIGN         =                              17
+24    STRING         "El valor es \"especial\""     17
+25    ID             ruta                           18
+26    ASSIGN         =                              18
+27    STRING         "C:\Users\nahin"               18
+28    ID             suma                           21
+29    ASSIGN         =                              21
+30    ID             entero                         21
+31    PLUS           +                              21
+32    ID             cien                           21
+33    ID             resta                          22
+34    ASSIGN         =                              22
+35    ID             cien                           22
+36    MINUS          -                              22
+37    ID             entero                         22
+38    ID             producto                       23
+39    ASSIGN         =                              23
+40    ID             flotante                       23
+41    TIMES          *                              23
+42    NUMBER         2                              23
+43    ID             division                       24
+44    ASSIGN         =                              24
+45    ID             cien                           24
+46    DIVIDE         /                              24
+47    NUMBER         4                              24
+48    ID             modulo                         25
+49    ASSIGN         =                              25
+50    ID             cien                           25
+51    MOD            %                              25
+52    NUMBER         3                              25
+53    ID             potencia                       26
+54    ASSIGN         =                              26
+55    NUMBER         2                              26
+56    POWER          ^                              26
+57    NUMBER         8                              26
+58    ID             r1                             29
+59    ASSIGN         =                              29
+60    ID             entero                         29
+61    EQ             ==                             29
+62    NUMBER         42                             29
+63    ID             r2                             30
+64    ASSIGN         =                              30
+65    ID             entero                         30
+66    NE             ~=                             30
+67    NUMBER         100                            30
+68    ID             r3                             31
+69    ASSIGN         =                              31
+70    ID             flotante                       31
+71    LT             <                              31
+72    NUMBER         10                             31
+73    ID             r4                             32
+74    ASSIGN         =                              32
+75    ID             flotante                       32
+76    GT             >                              32
+77    NUMBER         2                              32
+78    ID             r5                             33
+79    ASSIGN         =                              33
+80    ID             cien                           33
+81    LE             <=                             33
+82    NUMBER         100                            33
+83    ID             r6                             34
+84    ASSIGN         =                              34
+85    ID             cien                           34
+86    GE             >=                             34
+87    NUMBER         50                             34
+88    ID             adulto                         37
+89    ASSIGN         =                              37
+90    ID             entero                         37
+91    GE             >=                             37
+92    NUMBER         18                             37
+93    AND            and                            37
+94    ID             cien                           37
+95    LE             <=                             37
+96    NUMBER         200                            37
+97    ID             alt                            38
+98    ASSIGN         =                              38
+99    ID             entero                         38
+100   LT             <                              38
+101   NUMBER         0                              38
+102   OR             or                             38
+103   ID             cien                           38
+104   GT             >                              38
+105   NUMBER         50                             38
+106   ID             inv                            39
+107   ASSIGN         =                              39
+108   NOT            not                            39
+109   ID             adulto                         39
+110   ID             combo                          40
+111   ASSIGN         =                              40
+112   ID             entero                         40
+113   GT             >                              40
+114   NUMBER         0                              40
+115   AND            and                            40
+116   NOT            not                            40
+117   LPAREN         (                              40
+118   ID             flotante                       40
+119   EQ             ==                             40
+120   NUMBER         0                              40
+121   RPAREN         )                              40
+122   ID             presentacion                   43
+123   ASSIGN         =                              43
+124   STRING         "Hola, soy "                   43
+125   CONCAT         ..                             43
+126   ID             nombre                         43
+127   CONCAT         ..                             43
+128   STRING         " y el valor es "              43
+129   CONCAT         ..                             43
+130   ID             entero                         43
+
+Total de tokens: 130
+
+>>> RESUMEN - APORTE NAHIN ESPINOZA
+    Números, Strings y Operadores
+----------------------------------------
+  AND           : 2
+  CONCAT        : 3
+  DIVIDE        : 1
+  EQ            : 2
+  GE            : 2
+  GT            : 3
+  LE            : 2
+  LT            : 2
+  MINUS         : 1
+  MOD           : 1
+  NE            : 1
+  NOT           : 2
+  NUMBER        : 22
+  OR            : 1
+  PLUS          : 1
+  POWER         : 1
+  STRING        : 6
+  TIMES         : 1
+
+>>> ERRORES ENCONTRADOS
+----------------------------------------
+  Sin errores léxicos.
+
+============================================================
+  FIN DEL ANÁLISIS
+============================================================

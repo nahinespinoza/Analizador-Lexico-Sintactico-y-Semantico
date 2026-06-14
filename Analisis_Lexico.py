@@ -57,6 +57,7 @@ tokens = (
     'TRUE',
     'FALSE',
     'NIL',
+    'COMMA',
 )
 
 tokens = tuple(dict.fromkeys(tokens))  # Eliminar duplicados
@@ -150,6 +151,7 @@ def generate_log(all_tokens, errors, source_filename):
         'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD', 'POWER',
         'EQ', 'NE', 'LT', 'GT', 'LE', 'GE',
         'AND', 'OR', 'NOT', 'CONCAT',
+        'COMMA',
     }
 
     with open(log_path, "w", encoding="utf-8") as f:
@@ -207,6 +209,7 @@ def analizar(codigo, source_filename):
         'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'MOD', 'POWER',
         'EQ', 'NE', 'LT', 'GT', 'LE', 'GE',
         'AND', 'OR', 'NOT', 'CONCAT',
+        'COMMA',
     }
 
     print("=" * 60)
@@ -268,6 +271,7 @@ t_LPAREN   = r'\('
 t_RPAREN   = r'\)'
 t_DOT      = r'\.'
 t_ignore   = ' \t\r'
+t_COMMA = r','
 
 
 # ==================== GENERACIÓN DE LOG ====================
@@ -285,7 +289,8 @@ def generate_log_reservadas(all_tokens, errors, source_filename):
         'FUNCTION', 'LOCAL',
         'RETURN', 'END',
         'TRUE', 'FALSE', 'NIL',
-        'AND', 'OR', 'NOT'
+        'AND', 'OR', 'NOT',
+        'COMMA'
     }
 
     with open(log_path, "w", encoding="utf-8") as f:
@@ -302,7 +307,9 @@ def generate_log_reservadas(all_tokens, errors, source_filename):
         f.write(f"{'N°':<5} {'TIPO':<15} {'VALOR':<30} {'LÍNEA'}\n")
         f.write("-" * 60 + "\n")
 
-        for i, tok in enumerate(all_tokens, 1):
+        tokens_julian = [tok for tok in all_tokens if tok.type in mis_tokens]
+
+        for i, tok in enumerate(tokens_julian, 1):
             f.write(
                 f"{i:<5} "
                 f"{tok.type:<15} "
@@ -310,7 +317,7 @@ def generate_log_reservadas(all_tokens, errors, source_filename):
                 f"{tok.lineno}\n"
             )
 
-        f.write(f"\nTotal de tokens: {len(all_tokens)}\n\n")
+        f.write(f"\nTotal de tokens: {len(tokens_julian)}\n\n")
 
         f.write(">>> RESUMEN - APORTE JULIAN RUIZ\n")
         f.write("    Identificadores y Palabras Reservadas\n")
@@ -359,7 +366,8 @@ def analizar_reservadas(codigo, source_filename):
         'FUNCTION', 'LOCAL',
         'RETURN', 'END',
         'TRUE', 'FALSE', 'NIL',
-        'AND', 'OR', 'NOT'
+        'AND', 'OR', 'NOT',
+        'COMMA'
     }
 
     print("=" * 60)
