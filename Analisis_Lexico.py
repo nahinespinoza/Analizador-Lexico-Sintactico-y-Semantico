@@ -42,15 +42,22 @@ tokens = (
     'LPAREN',
     'RPAREN',
     'DOT',
+    # Tokens Julian Ruiz
+    'IF',
+    'THEN',
+    'ELSE',
+    'ELSEIF',
+    'WHILE',
+    'DO',
+    'FOR',
+    'FUNCTION',
+    'LOCAL',
+    'RETURN',
+    'END',
+    'TRUE',
+    'FALSE',
+    'NIL',
 )
-
-# and/or/not coinciden con el patrón de identificador,
-# se resuelven dentro de t_ID con este diccionario
-reserved = {
-    'and': 'AND',
-    'or':  'OR',
-    'not': 'NOT',
-}
 
 tokens = tuple(dict.fromkeys(tokens))  # Eliminar duplicados
 
@@ -120,26 +127,6 @@ t_POWER  = r'\^'
 # ============================================================
 # FIN APORTE: NAHIN ESPINOZA
 # ============================================================
-
-# ==================== TOKENS AUXILIARES ====================
-# Solo lo mínimo para procesar identificadores y símbolos del algoritmo1.lua
-
-def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = reserved.get(t.value, 'ID') 
-    # and/or/not comparten el mismo patrón que un identificador,
-    # se distinguen aquí consultando el diccionario reserved
-    return t
-
-def t_COMMENT_SINGLE(t):
-    r'--[^\n]*'
-    pass  # Ignorar comentarios
-
-t_ASSIGN   = r'='
-t_LPAREN   = r'\('
-t_RPAREN   = r'\)'
-t_DOT      = r'\.'
-t_ignore   = ' \t\r'
 
 def t_newline(t):
     r'\n+'
@@ -243,15 +230,202 @@ def analizar(codigo, source_filename):
 
     generate_log(all_tokens, lexer.error_list, source_filename)
 
+# ============================================================
+# INICIO APORTE: JULIAN RUIZ
+# ============================================================
+
+reserved = {
+    'if': 'IF',
+    'then': 'THEN',
+    'else': 'ELSE',
+    'elseif': 'ELSEIF',
+    'while': 'WHILE',
+    'do': 'DO',
+    'for': 'FOR',
+    'function': 'FUNCTION',
+    'local': 'LOCAL',
+    'return': 'RETURN',
+    'end': 'END',
+    'true': 'TRUE',
+    'false': 'FALSE',
+    'nil': 'NIL',
+    'and': 'AND',
+    'or':  'OR',
+    'not': 'NOT',
+}
+
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    t.type = reserved.get(t.value, 'ID')
+    return t
+
+def t_COMMENT_SINGLE(t):
+    r'--[^\n]*'
+    pass  # Ignorar comentarios
+
+t_ASSIGN   = r'='
+t_LPAREN   = r'\('
+t_RPAREN   = r'\)'
+t_DOT      = r'\.'
+t_ignore   = ' \t\r'
+
+
+# ==================== GENERACIÓN DE LOG ====================
+def generate_log_reservadas(all_tokens, errors, source_filename):
+    os.makedirs("logs", exist_ok=True)
+
+    now = datetime.now()
+    timestamp = now.strftime("%d-%m-%Y-%Hh%M")
+    log_path = f"logs/lexico-JulianRuiz-{timestamp}.txt"
+
+    mis_tokens = {
+        'ID',
+        'IF', 'THEN', 'ELSE', 'ELSEIF',
+        'WHILE', 'DO', 'FOR',
+        'FUNCTION', 'LOCAL',
+        'RETURN', 'END',
+        'TRUE', 'FALSE', 'NIL',
+        'AND', 'OR', 'NOT'
+    }
+
+    with open(log_path, "w", encoding="utf-8") as f:
+
+        f.write("=" * 60 + "\n")
+        f.write("  LOG DE ANÁLISIS LÉXICO - PROYECTO LUA\n")
+        f.write(f"  Integrante : Julian Ruiz\n")
+        f.write(f"  Aporte     : Identificadores y Palabras Reservadas\n")
+        f.write(f"  Archivo    : {source_filename}\n")
+        f.write(f"  Fecha/Hora : {now.strftime('%d/%m/%Y %H:%M:%S')}\n")
+        f.write("=" * 60 + "\n\n")
+
+        f.write(">>> TOKENS RECONOCIDOS\n")
+        f.write(f"{'N°':<5} {'TIPO':<15} {'VALOR':<30} {'LÍNEA'}\n")
+        f.write("-" * 60 + "\n")
+
+        for i, tok in enumerate(all_tokens, 1):
+            f.write(
+                f"{i:<5} "
+                f"{tok.type:<15} "
+                f"{str(tok.value):<30} "
+                f"{tok.lineno}\n"
+            )
+
+        f.write(f"\nTotal de tokens: {len(all_tokens)}\n\n")
+
+        f.write(">>> RESUMEN - APORTE JULIAN RUIZ\n")
+        f.write("    Identificadores y Palabras Reservadas\n")
+        f.write("-" * 40 + "\n")
+
+        conteo = {}
+
+        for tok in all_tokens:
+            if tok.type in mis_tokens:
+                conteo[tok.type] = conteo.get(tok.type, 0) + 1
+
+        for tipo, cantidad in sorted(conteo.items()):
+            f.write(f"  {tipo:<15}: {cantidad}\n")
+
+        f.write("\n>>> ERRORES ENCONTRADOS\n")
+        f.write("-" * 40 + "\n")
+
+        if errors:
+            for err in errors:
+                f.write(f"  {err}\n")
+        else:
+            f.write("  Sin errores léxicos.\n")
+
+        f.write("\n" + "=" * 60 + "\n")
+        f.write("  FIN DEL ANÁLISIS\n")
+        f.write("=" * 60 + "\n")
+
+    print(f"\n----- Log generado: {log_path}")
+
+    return log_path
+
+# ==================== ANÁLISIS ====================
+def analizar_reservadas(codigo, source_filename):
+
+    lexer = lex.lex()
+    lexer.error_list = []
+
+    lexer.input(codigo)
+
+    all_tokens = []
+
+    mis_tokens = {
+        'ID',
+        'IF', 'THEN', 'ELSE', 'ELSEIF',
+        'WHILE', 'DO', 'FOR',
+        'FUNCTION', 'LOCAL',
+        'RETURN', 'END',
+        'TRUE', 'FALSE', 'NIL',
+        'AND', 'OR', 'NOT'
+    }
+
+    print("=" * 60)
+    print(" APORTE: JULIAN RUIZ — Identificadores y Palabras Reservadas")
+    print("=" * 60)
+    print(f"{'TIPO':<15} {'VALOR':<30} {'LÍNEA'}")
+    print("-" * 60)
+
+    while True:
+
+        tok = lexer.token()
+
+        if not tok:
+            break
+
+        all_tokens.append(tok)
+
+        if tok.type in mis_tokens:
+            print(
+                f"{tok.type:<15} "
+                f"{str(tok.value):<30} "
+                f"{tok.lineno}"
+            )
+
+    print("-" * 60)
+
+    print(
+        f"Tokens de mi aporte : "
+        f"{sum(1 for t in all_tokens if t.type in mis_tokens)}"
+    )
+
+    print(f"Tokens en total     : {len(all_tokens)}")
+
+    generate_log_reservadas(
+        all_tokens,
+        lexer.error_list,
+        source_filename
+    )
+
+
+# ============================================================
+# FIN APORTE:Julian Ruiz
+# ============================================================
+
 # ==================== MAIN ====================
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    source_file = os.path.join(script_dir, "algoritmo1.lua")
 
-    if os.path.exists(source_file):
-        with open(source_file, "r", encoding="utf-8") as f:
+    archivo1 = os.path.join(script_dir, "algoritmo1.lua")
+    archivo2 = os.path.join(script_dir, "algoritmo2.lua")
+
+    # APORTE NAHIN
+    if os.path.exists(archivo1):
+        with open(archivo1, "r", encoding="utf-8") as f:
             codigo = f.read()
-        print(f"Archivo: {source_file}\n")
-        analizar(codigo, source_file)
+        print("\n===== APORTE NAHIN ESPINOZA =====\n")
+        analizar(codigo, archivo1)
     else:
-        print("---- X No se encontró algoritmo1.lua en la misma carpeta. X ---- ")
+        print("No se encontró algoritmo1.lua")
+    
+    # APORTE JULIAN
+    
+    if os.path.exists(archivo2):
+        with open(archivo2, "r", encoding="utf-8") as f:
+            codigo = f.read()
+        print("\n===== APORTE JULIAN RUIZ =====\n")
+        analizar_reservadas(codigo, archivo2)
+    else:
+        print("No se encontró algoritmo2.lua")
