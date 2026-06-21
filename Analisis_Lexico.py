@@ -42,6 +42,11 @@ tokens = (
     'LPAREN',
     'RPAREN',
     'DOT',
+     # Tokens nuevos Nahin Espinoza: While / Diccionarios (Tables) / Entrada de datos
+    'LBRACE',   # {
+    'RBRACE',   # }
+    'LBRACKET', # [
+    'RBRACKET', # ]
     # Tokens Julian Ruiz
     'IF',
     'THEN',
@@ -124,6 +129,12 @@ t_TIMES  = r'\*'
 t_DIVIDE = r'/'
 t_MOD    = r'%'
 t_POWER  = r'\^'
+
+# ------ LLAVES Y CORCHETES (Diccionarios / Tables y acceso indexado) ------
+t_LBRACE   = r'\{'
+t_RBRACE   = r'\}'
+t_LBRACKET = r'\['
+t_RBRACKET = r'\]'
 
 # ============================================================
 # FIN APORTE: NAHIN ESPINOZA

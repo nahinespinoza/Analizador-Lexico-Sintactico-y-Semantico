@@ -1,0 +1,25 @@
+LOG DE ANÁLISIS SINTÁCTICO
+========================================
+
+CÓDIGO ANALIZADO:
+
+local resultado = 2 + 3 * 4
+local r = (2 + 3) * 4 ^ 2
+ 
+local persona = { nombre = "Ana", edad = 20 }
+edadActual = persona["edad"]
+ 
+local entrada = io.read()
+ 
+function saludar(nombre)
+    mensaje = "hola"
+end
+ 
+local contador = 1
+while contador < 5 do
+    contador = contador + 1
+end
+
+
+ERRORES ENCONTRADOS:
+Sin errores sintácticos.

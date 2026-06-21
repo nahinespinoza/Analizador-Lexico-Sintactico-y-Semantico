@@ -1,7 +1,8 @@
-from Analisis_Sintactico import parser, ERRORS, generar_log_sintactico
-from Analisis_Lexico import lexer
+LOG DE ANÁLISIS SINTÁCTICO
+========================================
 
-codigo = """
+CÓDIGO ANALIZADO:
+
 local resultado = 2 + 3 * 4
 local r = (2 + 3) * 4 ^ 2
  
@@ -28,10 +29,7 @@ end
 for i = 1, 10, 2 do
     local doble = i * 2
 end
-"""
- 
-ERRORS.clear()
- 
-parser.parse(codigo, lexer=lexer)
- 
-generar_log_sintactico(codigo, usuario="nahinespinoza")
+
+
+ERRORES ENCONTRADOS:
+Sin errores sintácticos.

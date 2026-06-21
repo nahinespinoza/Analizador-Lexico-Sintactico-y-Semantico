@@ -30,12 +30,7 @@ def p_statement_global(p):
 
 def p_value(p):
     '''
-    value : NUMBER
-          | STRING
-          | TRUE
-          | FALSE
-          | NIL
-          | ID
+    value : NIL
     '''
     p[0] = p[1]
 
@@ -100,6 +95,23 @@ def p_statement_function(p):
     '''
     print("Función válida:", p[2])
 
+#FUNCIONES CON RETORNO => Nahin Espinoza 
+
+def p_statement_function_return(p):
+    '''
+    statement : FUNCTION ID LPAREN param_list RPAREN program RETURN expression END
+              | FUNCTION ID LPAREN param_list RPAREN empty RETURN expression END
+    '''
+    print(f"Función con retorno válida: {p[2]} -> retorna {p[8]}")
+
+def p_param_list(p):
+    '''
+    param_list : param_list COMMA ID
+               | ID
+               | empty
+    '''
+    pass
+
 def p_param_list(p):
     '''
     param_list : param_list COMMA ID
@@ -139,6 +151,193 @@ def p_error(p):
 
 
 # ============================================================
+# INICIO APORTE: NAHIN ESPINOZA
+# Temas: Expresiones Aritméticas y Precedencia de Operadores,
+#        Estructura While, Diccionarios (Tables clave-valor),
+#        Función sin Retorno (uso dentro del while),
+#        Entrada de Datos (io.read())
+# ============================================================
+ 
+# ------------------------------------------------------------
+# 1) PRECEDENCIA DE OPERADORES ARITMÉTICOS
+# ------------------------------------------------------------
+# De menor a mayor precedencia, igual que en Lua:
+#   or
+#   and
+#   relacionales (<  >  <=  >=  ~=  ==)
+#   ..  (concatenación)
+#   +  -          (binarios)
+#   *  /  %       
+#   unario - (not, # no se implementan aquí)
+#   ^             (potencia, asocia a la derecha)
+precedence = (
+    ('left', 'OR'),
+    ('left', 'AND'),
+    ('left', 'GT', 'LT', 'GE', 'LE', 'EQ', 'NE'),
+    ('left', 'CONCAT'),
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'TIMES', 'DIVIDE', 'MOD'),
+    ('right', 'POWER'),
+    ('right', 'UMINUS'),
+)
+ 
+# ------------------------------------------------------------
+# CONEXIÓN value -> expression
+# ------------------------------------------------------------
+# Esto permite que una asignación (local x = ... / x = ...)
+# acepte expresiones aritméticas completas, no solo valores sueltos.
+# Ejemplo: resultado = 2 + 3 * 4   /   r = (2 + 3) * 4 ^ 2
+def p_value_expression(p):
+    '''
+    value : expression
+    '''
+    p[0] = p[1]
+ 
+ 
+# ------------------------------------------------------------
+# EXPRESIONES ARITMÉTICAS
+# ------------------------------------------------------------
+def p_expression_binop(p):
+    '''
+    expression : expression PLUS expression
+               | expression MINUS expression
+               | expression TIMES expression
+               | expression DIVIDE expression
+               | expression MOD expression
+               | expression POWER expression
+    '''
+    izq, op, der = p[1], p[2], p[3]
+ 
+    if op == '+':
+        p[0] = izq + der if isinstance(izq, (int, float)) and isinstance(der, (int, float)) else True
+    elif op == '-':
+        p[0] = izq - der if isinstance(izq, (int, float)) and isinstance(der, (int, float)) else True
+    elif op == '*':
+        p[0] = izq * der if isinstance(izq, (int, float)) and isinstance(der, (int, float)) else True
+    elif op == '/':
+        p[0] = izq / der if isinstance(izq, (int, float)) and isinstance(der, (int, float)) and der != 0 else True
+    elif op == '%':
+        p[0] = izq % der if isinstance(izq, (int, float)) and isinstance(der, (int, float)) and der != 0 else True
+    elif op == '^':
+        p[0] = izq ** der if isinstance(izq, (int, float)) and isinstance(der, (int, float)) else True
+ 
+    print(f"Expresión aritmética válida: {izq} {op} {der} -> {p[0]}")
+ 
+ 
+def p_expression_uminus(p):
+    '''
+    expression : MINUS expression %prec UMINUS
+    '''
+    p[0] = -p[2] if isinstance(p[2], (int, float)) else True
+    print("Expresión unaria válida (negativo):", p[0])
+ 
+ 
+def p_expression_group(p):
+    '''
+    expression : LPAREN expression RPAREN
+    '''
+    p[0] = p[2]
+    print("Expresión agrupada (paréntesis) válida")
+ 
+# ------------------------------------------------------------
+# CONCATENACIÓN DE STRINGS (..)
+# ------------------------------------------------------------
+def p_expression_concat(p):
+    '''
+    expression : expression CONCAT expression
+    '''
+    izq, der = p[1], p[3]
+    p[0] = f"{izq}{der}"
+    print(f"Concatenación válida: {izq} .. {der} -> {p[0]}") 
+
+# ------------------------------------------------------------
+# 1) ESTRUCTURA WHILE
+# ------------------------------------------------------------
+def p_statement_while(p):
+    '''
+    statement : WHILE expression DO program END
+    '''
+    print("WHILE válido")
+
+# ------------------------------------------------------------
+# 2)    ESTRUCTURA FOR (numérico): for i = inicio, fin [, paso] do ... end
+# ------------------------------------------------------------
+def p_statement_for(p):
+    '''
+    statement : FOR ID ASSIGN expression COMMA expression DO program END
+              | FOR ID ASSIGN expression COMMA expression COMMA expression DO program END
+    '''
+    print(f"FOR válido: variable de control '{p[2]}'") 
+ 
+# ------------------------------------------------------------
+# 3) DICCIONARIOS / TABLES (clave = valor), estilo Lua
+#    Ejemplo:  local persona = { nombre = "Ana", edad = 20 }
+# ------------------------------------------------------------
+def p_value_table(p):
+    '''
+    value : LBRACE table_fields RBRACE
+    '''
+    p[0] = p[2]
+    print("Tabla (diccionario) válida:", p[2])
+ 
+ 
+def p_table_fields(p):
+    '''
+    table_fields : table_fields COMMA table_field
+                 | table_field
+                 | empty
+    '''
+    if len(p) == 4:
+        p[1].update(p[3])
+        p[0] = p[1]
+    elif len(p) == 2 and p[1] not in (None,) and isinstance(p[1], dict):
+        p[0] = p[1]
+    else:
+        p[0] = {}
+ 
+ 
+def p_table_field(p):
+    '''
+    table_field : ID ASSIGN value
+    '''
+    p[0] = {p[1]: p[3]}
+    print(f"  -> clave '{p[1]}' asignada con valor '{p[3]}'")
+ 
+ 
+# Acceso indexado a tabla: persona["edad"]  ó  persona[1]
+def p_expression_table_access(p):
+    '''
+    expression : ID LBRACKET value RBRACKET
+    '''
+    p[0] = True
+    print(f"Acceso a tabla válido: {p[1]}[{p[3]}]")
+ 
+ 
+# ------------------------------------------------------------
+# 4) ENTRADA DE DATOS: io.read()
+#    Se usa como value para poder asignarse, ej:
+#    local nombre = io.read()
+# ------------------------------------------------------------
+def p_value_io_read(p):
+    '''
+    value : ID DOT ID LPAREN RPAREN
+    '''
+    if p[1] == "io" and p[3] == "read":
+        p[0] = "ENTRADA_DATOS"
+        print("Entrada de datos válida: io.read()")
+    else:
+        p[0] = None
+ 
+ 
+# ============================================================
+# FIN APORTE: NAHIN ESPINOZA
+# ============================================================
+
+
+
+
+
+# ============================================================
 # GENERAR LOGS
 # ============================================================
 from datetime import datetime
@@ -146,32 +345,30 @@ import os
 
 ERRORS = []
 
-def generar_log_sintactico(codigo):
+def generar_log_sintactico(codigo, usuario="RuizJul"):
     os.makedirs("logs", exist_ok=True)
-
+ 
     now = datetime.now()
     fecha = now.strftime("%d%m%Y")
     hora = now.strftime("%Hh%M")
-
-    usuario = "RuizJul"  
-
+ 
     filename = f"logs/sintactico-{usuario}-{fecha}-{hora}.txt"
-
+ 
     with open(filename, "w", encoding="utf-8") as f:
         f.write("LOG DE ANÁLISIS SINTÁCTICO\n")
         f.write("=" * 40 + "\n\n")
-
+ 
         f.write("CÓDIGO ANALIZADO:\n")
         f.write(codigo + "\n\n")
-
+ 
         f.write("ERRORES ENCONTRADOS:\n")
-
+ 
         if ERRORS:
             for e in ERRORS:
                 f.write("- " + e + "\n")
         else:
             f.write("Sin errores sintácticos.\n")
-
+ 
     print(f"\n📄 Log generado: {filename}")
 
 
