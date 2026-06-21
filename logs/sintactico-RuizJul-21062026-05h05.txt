@@ -1,0 +1,11 @@
+LOG DE ANÁLISIS SINTÁCTICO
+========================================
+
+CÓDIGO ANALIZADO:
+
+local edad = 20
+nombre = "adulto"
+
+
+ERRORES ENCONTRADOS:
+Sin errores sintácticos.

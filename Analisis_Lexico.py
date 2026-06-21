@@ -437,3 +437,7 @@ if __name__ == "__main__":
         analizar_reservadas(codigo, archivo2)
     else:
         print("No se encontró algoritmo2.lua")
+        
+
+
+lexer = lex.lex()

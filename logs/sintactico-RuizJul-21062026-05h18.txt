@@ -1,0 +1,18 @@
+LOG DE ANÁLISIS SINTÁCTICO
+========================================
+
+CÓDIGO ANALIZADO:
+
+local edad = 20
+
+if edad >= 18 then
+    nombre = "adulto"
+else
+    nombre = "menor"
+end
+
+nombre = "final"
+
+
+ERRORES ENCONTRADOS:
+Sin errores sintácticos.

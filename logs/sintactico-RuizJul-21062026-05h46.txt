@@ -1,0 +1,13 @@
+LOG DE ANÁLISIS SINTÁCTICO
+========================================
+
+CÓDIGO ANALIZADO:
+
+local a = 10
+print(a)
+print(20)
+print("hola mundo")
+
+
+ERRORES ENCONTRADOS:
+Sin errores sintácticos.

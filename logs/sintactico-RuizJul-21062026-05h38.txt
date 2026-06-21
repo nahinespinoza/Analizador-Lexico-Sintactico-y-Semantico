@@ -1,0 +1,12 @@
+LOG DE ANÁLISIS SINTÁCTICO
+========================================
+
+CÓDIGO ANALIZADO:
+
+function suma(a, b)
+    x = 'a'
+end
+
+
+ERRORES ENCONTRADOS:
+Sin errores sintácticos.
