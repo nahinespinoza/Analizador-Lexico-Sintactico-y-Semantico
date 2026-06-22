@@ -104,13 +104,7 @@ def p_statement_function_return(p):
     '''
     print(f"Función con retorno válida: {p[2]} -> retorna {p[8]}")
 
-def p_param_list(p):
-    '''
-    param_list : param_list COMMA ID
-               | ID
-               | empty
-    '''
-    pass
+
 
 def p_param_list(p):
     '''
@@ -137,6 +131,47 @@ def p_print_args(p):
     '''
     pass
 
+# Arreglos (Tables Indexadas)
+
+def p_statement_array(p):
+    '''
+    statement : ID ASSIGN LBRACE value_list RBRACE
+    '''
+    print("Arreglo válido:", p[1])
+
+def p_value_list(p):
+    '''
+    value_list : value_list COMMA value
+               | value
+               | empty
+    '''
+    pass
+
+def p_array_access(p):
+    '''
+    array_access : ID LBRACKET value RBRACKET
+    '''
+    pass
+
+def p_value_array_access(p):
+    '''
+    value : array_access
+    '''
+    p[0] = p[1]
+
+# EXPRESIONES LOGICAS
+def p_expression_logic(p):
+    '''
+    expression : expression AND expression
+               | expression OR expression
+    '''
+    pass
+
+def p_expression_not(p):
+    '''
+    expression : NOT expression
+    '''
+    pass
 
 # ERRORES
 def p_error(p):
@@ -148,6 +183,9 @@ def p_error(p):
         msg = "Error sintáctico al final del archivo"
         print(msg)
         ERRORS.append(msg)
+# ============================================================
+# FIN APORTE: JULIAN RUIZ
+# ============================================================
 
 
 # ============================================================

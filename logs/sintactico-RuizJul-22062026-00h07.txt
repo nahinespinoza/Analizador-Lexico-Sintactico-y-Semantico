@@ -1,7 +1,8 @@
-from Analisis_Sintactico import parser, ERRORS, generar_log_sintactico
-from Analisis_Lexico import lexer
+LOG DE ANÁLISIS SINTÁCTICO
+========================================
 
-codigo = """
+CÓDIGO ANALIZADO:
+
 local edad = 20
 
 activo = true
@@ -20,9 +21,7 @@ print(numeros[1])
 
 if edad >= 18 then
 
-    print(nombre)
-
-elseif edad == 17 then
+    
 
     print("casi")
 
@@ -59,10 +58,9 @@ function obtenerEstado()
     return true
 
 end
-"""
- 
-ERRORS.clear()
- 
-parser.parse(codigo, lexer=lexer)
- 
-generar_log_sintactico(codigo, usuario="RuizJul")
+
+
+ERRORES ENCONTRADOS:print(nombre)
+
+elseif edad == 17 then
+Sin errores sintácticos.

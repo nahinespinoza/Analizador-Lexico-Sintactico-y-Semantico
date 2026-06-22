@@ -1,0 +1,11 @@
+LOG DE ANÁLISIS SINTÁCTICO
+========================================
+
+CÓDIGO ANALIZADO:
+
+numeros = {10,20,30}
+print(numeros[1])
+
+
+ERRORES ENCONTRADOS:
+Sin errores sintácticos.
