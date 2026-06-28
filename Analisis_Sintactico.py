@@ -1,5 +1,7 @@
 import ply.yacc as yacc
 from Analisis_Lexico import tokens , lexer
+import Analisis_Semantico as sem
+
 
 # ============================================================
 # INICIO APORTE: JULIAN RUIZ
@@ -21,12 +23,16 @@ def p_statement_local(p):
     statement : LOCAL ID ASSIGN value
     '''
     print("Declaracion local valida:", p[2])
+    # --- SEMÁNTICA: alimenta tabla de símbolos para Regla #1 ---
+    sem.registrar_variable_local(p[2], p.lineno(2))
 
 def p_statement_global(p):
     '''
     statement : ID ASSIGN value
     '''
     print("Asignacion global valida:", p[1])
+    # --- SEMÁNTICA: alimenta tabla de símbolos para Regla #1 ---
+    sem.registrar_variable_global(p[1], p.lineno(1))
 
 def p_value(p):
     '''
@@ -83,6 +89,11 @@ def p_expression_value(p):
                | ID
     '''
     p[0] = p[1]
+    # --- SEMÁNTICA: Regla #1 (Nahin Espinoza) - variable no declarada ---
+    # Solo aplica cuando la expresión es un identificador (ID),
+    # ya que NUMBER/STRING/TRUE/FALSE son literales sin nombre.
+    if p.slice[1].type == 'ID':
+        sem.regla_variable_no_declarada(p[1], p.lineno(1))
 
 def p_empty(p):
     'empty :'
@@ -94,6 +105,8 @@ def p_statement_function(p):
     statement : FUNCTION ID LPAREN param_list RPAREN program END
     '''
     print("Función válida:", p[2])
+    # --- SEMÁNTICA: Regla #2 (Nahin Espinoza) - función duplicada ---
+    sem.regla_funcion_duplicada(p[2], p.lineno(2), p[4], tiene_retorno=False)
 
 #FUNCIONES CON RETORNO => Nahin Espinoza 
 
@@ -103,8 +116,8 @@ def p_statement_function_return(p):
               | FUNCTION ID LPAREN param_list RPAREN empty RETURN expression END
     '''
     print(f"Función con retorno válida: {p[2]} -> retorna {p[8]}")
-
-
+    # --- SEMÁNTICA: Regla #2 (Nahin Espinoza) - función duplicada ---
+    sem.regla_funcion_duplicada(p[2], p.lineno(2), p[4], tiene_retorno=True)
 
 def p_param_list(p):
     '''
@@ -112,7 +125,17 @@ def p_param_list(p):
                | ID
                | empty
     '''
-    pass
+    # Cuenta los parámetros (se guardan en tabla_funciones, Regla #2)
+    # y registra cada uno como variable válida dentro del cuerpo
+    # de la función (evita falsos positivos en Regla #1).
+    if len(p) == 4:
+        p[0] = p[1] + 1
+        sem.registrar_variable_global(p[3], p.lineno(3))
+    elif len(p) == 2 and p[1] not in (None, ''):
+        p[0] = 1
+        sem.registrar_variable_global(p[1], p.lineno(1))
+    else:
+        p[0] = 0
 
 #IMPRIMIR
 
@@ -300,12 +323,22 @@ def p_statement_while(p):
 # ------------------------------------------------------------
 # 2)    ESTRUCTURA FOR (numérico): for i = inicio, fin [, paso] do ... end
 # ------------------------------------------------------------
+def p_for_header(p):
+    '''
+    for_header : FOR ID ASSIGN expression COMMA expression DO
+               | FOR ID ASSIGN expression COMMA expression COMMA expression DO
+    '''
+    # Se ejecuta ANTES de reducir 'program' (cuerpo del for), por lo
+    # que aquí registramos la variable de control para que sea válida
+    # dentro del cuerpo del bucle (ej. 'for i = 1, 10 do ... i ... end')
+    sem.registrar_variable_global(p[2], p.lineno(2))
+    p[0] = p[2]
+ 
 def p_statement_for(p):
     '''
-    statement : FOR ID ASSIGN expression COMMA expression DO program END
-              | FOR ID ASSIGN expression COMMA expression COMMA expression DO program END
+    statement : for_header program END
     '''
-    print(f"FOR válido: variable de control '{p[2]}'") 
+    print(f"FOR válido: variable de control '{p[1]}'")
  
 # ------------------------------------------------------------
 # 3) DICCIONARIOS / TABLES (clave = valor), estilo Lua

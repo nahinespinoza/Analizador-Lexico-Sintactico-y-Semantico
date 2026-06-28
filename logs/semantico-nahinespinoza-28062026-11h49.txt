@@ -1,0 +1,59 @@
+LOG DE ANÁLISIS SEMÁNTICO
+==================================================
+
+CÓDIGO ANALIZADO:
+
+local resultado = 2 + 3 * 4
+local r = (2 + 3) * 4 ^ 2
+ 
+local persona = { nombre = "Ana", edad = 20 }
+edadActual = persona["edad"]
+ 
+local entrada = io.read()
+ 
+local saludo = "hola" .. " mundo"
+ 
+function saludar(nombre)
+    mensaje = "hola"
+end
+ 
+function suma(a, b)
+    return a + b
+end
+ 
+local contador = 1
+while contador < 5 do
+    contador = contador + 1
+end
+ 
+for i = 1, 10, 2 do
+    local doble = i * 2
+end
+
+
+TABLA DE SÍMBOLOS - VARIABLES
+--------------------------------------------------
+NOMBRE              TIPO        LÍNEA
+resultado           local       2
+r                   local       3
+persona             local       5
+edadActual          global      6
+entrada             local       8
+saludo              local       10
+nombre              global      12
+mensaje             global      13
+a                   global      16
+b                   global      16
+contador            local       20
+i                   global      25
+doble               local       26
+
+TABLA DE SÍMBOLOS - FUNCIONES
+--------------------------------------------------
+NOMBRE              PARÁMETROS    RETORNO   LÍNEA
+saludar             1             No        12
+suma                2             Sí        16
+
+ERRORES SEMÁNTICOS ENCONTRADOS:
+--------------------------------------------------
+Sin errores semánticos.

@@ -1,0 +1,35 @@
+LOG DE ANÁLISIS SEMÁNTICO
+==================================================
+
+CÓDIGO ANALIZADO:
+
+local x = 1
+y = zzz
+ 
+function saludar(nombre)
+    mensaje = "hola"
+end
+ 
+function saludar(otro)
+    mensaje = "hola otra vez"
+end
+
+
+TABLA DE SÍMBOLOS - VARIABLES
+--------------------------------------------------
+NOMBRE              TIPO        LÍNEA
+x                   local       29
+y                   global      30
+nombre              global      32
+mensaje             global      33
+otro                global      36
+
+TABLA DE SÍMBOLOS - FUNCIONES
+--------------------------------------------------
+NOMBRE              PARÁMETROS    RETORNO   LÍNEA
+saludar             1             No        32
+
+ERRORES SEMÁNTICOS ENCONTRADOS:
+--------------------------------------------------
+- Línea 30: Error semántico - la variable 'zzz' se usa pero nunca fue declarada.
+- Línea 36: Error semántico - la función 'saludar' ya había sido declarada en la línea 32 (función duplicada).
