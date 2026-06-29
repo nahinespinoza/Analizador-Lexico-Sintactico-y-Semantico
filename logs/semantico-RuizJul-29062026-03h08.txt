@@ -1,0 +1,22 @@
+LOG DE ANÁLISIS SEMÁNTICO
+==================================================
+
+CÓDIGO ANALIZADO:
+
+for i = 1, 10 do
+    break
+end
+
+
+TABLA DE SÍMBOLOS - VARIABLES
+--------------------------------------------------
+NOMBRE              TIPO        LÍNEA
+i                   global      2
+
+TABLA DE SÍMBOLOS - FUNCIONES
+--------------------------------------------------
+No se registraron funciones.
+
+ERRORES SEMÁNTICOS ENCONTRADOS:
+--------------------------------------------------
+Sin errores semánticos.

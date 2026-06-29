@@ -4,8 +4,6 @@
 #
 # APORTE NAHIN ESPINOZA:
 #  1.- Declaración de variables
-#  2.- 
-#  3.- 
 #  4.- Funciones declaradas
 #
 # ============================================================
@@ -34,6 +32,11 @@ def reset_semantico():
     tabla_variables.clear()
     tabla_funciones.clear()
     SEMANTIC_ERRORS.clear()
+
+def error(t1, t2, op, linea):
+    msg = f"Línea {linea}: operación inválida {t1} {op} {t2}"
+    print("⚠️", msg)
+    SEMANTIC_ERRORS.append(msg)
 
 
 # ===========================
@@ -101,6 +104,84 @@ def regla_funcion_duplicada(nombre, linea, num_parametros, tiene_retorno):
 # FIN APORTE SEMÁNTICO: NAHIN ESPINOZA
 # ============================================================
 
+# ===========================
+# INICIO APORTE JULIAN RUIZ
+# ===========================
+
+def registrar_tipo_variable(nombre, tipo_dato):
+    if nombre not in tabla_variables:
+        return
+
+    tabla_variables[nombre]["tipo_dato"] = tipo_dato
+    print(f"SEMANTICO -> {nombre} : {tipo_dato}")
+
+
+def obtener_tipo_variable(nombre):
+    return tabla_variables.get(nombre, {}).get("tipo_dato")
+
+
+
+def validar_tipos_operacion(n1, n2, linea):
+    t1 = obtener_tipo_variable(n1)
+    t2 = obtener_tipo_variable(n2)
+
+    if t1 is None or t2 is None:
+        error(f"Línea {linea}: variable sin tipo definido ({n1}, {n2})")
+        return None, None
+
+    return t1, t2
+
+
+def regla_operacion(tipo_izq, tipo_der, operador, linea):
+
+    # -------------------------
+    # ARITMÉTICAS
+    # -------------------------
+    if operador in ["+", "-", "*", "/"]:
+        if tipo_izq != "number" or tipo_der != "number":
+            error(tipo_izq, tipo_der, operador, linea)
+            return False
+        return True
+
+    # -------------------------
+    # CONCATENACIÓN LUA
+    # -------------------------
+    if operador == "..":
+        if tipo_izq != "string" or tipo_der != "string":
+            error(f"Línea {linea}: concatenación inválida {tipo_izq} .. {tipo_der}")
+            return False
+        return True
+
+    # -------------------------
+    # COMPARACIONES
+    # -------------------------
+    if operador in ["==", "~=", "<", ">", "<=", ">="]:
+        return True
+
+    # -------------------------
+    # LÓGICOS
+    # -------------------------
+    if operador in ["and", "or"]:
+        return True
+
+    error(f"Línea {linea}: operador desconocido '{operador}'")
+    return False
+
+loop_stack = []
+
+def regla_break(linea):
+    if len(loop_stack) == 0:
+        msg = f"Línea {linea}: 'break' fuera de un bucle"
+        print("⚠️", msg)
+        SEMANTIC_ERRORS.append(msg)
+        return False
+
+    return True
+
+
+# ============================================================
+# FIN APORTE JULIAN RUIZ
+# ============================================================
 
 # ============================================================
 # GENERACIÓN DE LOG SEMÁNTICO

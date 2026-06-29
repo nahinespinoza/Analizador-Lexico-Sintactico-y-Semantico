@@ -1,0 +1,19 @@
+LOG DE ANÁLISIS SEMÁNTICO
+==================================================
+
+CÓDIGO ANALIZADO:
+
+break
+
+
+TABLA DE SÍMBOLOS - VARIABLES
+--------------------------------------------------
+No se registraron variables.
+
+TABLA DE SÍMBOLOS - FUNCIONES
+--------------------------------------------------
+No se registraron funciones.
+
+ERRORES SEMÁNTICOS ENCONTRADOS:
+--------------------------------------------------
+- Línea 18: 'break' fuera de un bucle

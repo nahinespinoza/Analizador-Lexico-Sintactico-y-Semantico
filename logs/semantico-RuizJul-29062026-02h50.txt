@@ -1,0 +1,24 @@
+LOG DE ANÁLISIS SEMÁNTICO
+==================================================
+
+CÓDIGO ANALIZADO:
+
+local a = 10
+local b = 5
+local c = a + b
+
+
+TABLA DE SÍMBOLOS - VARIABLES
+--------------------------------------------------
+NOMBRE              TIPO        LÍNEA
+a                   local       2
+b                   local       3
+c                   local       4
+
+TABLA DE SÍMBOLOS - FUNCIONES
+--------------------------------------------------
+No se registraron funciones.
+
+ERRORES SEMÁNTICOS ENCONTRADOS:
+--------------------------------------------------
+Sin errores semánticos.

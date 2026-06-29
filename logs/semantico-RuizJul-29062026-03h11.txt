@@ -1,0 +1,44 @@
+LOG DE ANÁLISIS SEMÁNTICO
+==================================================
+
+CÓDIGO ANALIZADO:
+
+local a = 10
+local b = 5
+local c = a + b
+
+function suma(x, y)
+    local z = x + y
+    return z
+end
+
+for i = 1, 10 do
+    local k = i
+    break
+end
+
+local d = a + "hola"
+
+
+TABLA DE SÍMBOLOS - VARIABLES
+--------------------------------------------------
+NOMBRE              TIPO        LÍNEA
+a                   local       2
+b                   local       3
+c                   local       4
+x                   global      6
+y                   global      6
+z                   local       7
+i                   global      11
+k                   local       12
+d                   local       16
+
+TABLA DE SÍMBOLOS - FUNCIONES
+--------------------------------------------------
+NOMBRE              PARÁMETROS    RETORNO   LÍNEA
+suma                2             Sí        6
+
+ERRORES SEMÁNTICOS ENCONTRADOS:
+--------------------------------------------------
+- Línea 0: operación inválida None + None
+- Línea 0: operación inválida number + string

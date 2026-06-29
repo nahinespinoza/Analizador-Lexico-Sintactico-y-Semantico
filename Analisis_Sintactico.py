@@ -17,22 +17,57 @@ def p_program(p):
     pass
 
 # ASIGNACIONES
+def inferir_tipo(valor):
+
+    if valor == "true" or valor == "false":
+        return "boolean"
+
+    if valor == "nil":
+        return "nil"
+
+    if isinstance(valor, bool):
+        return "boolean"
+
+    if isinstance(valor, int):
+        return "number"
+
+    if isinstance(valor, float):
+        return "number"
+
+    if isinstance(valor, str):
+        return "string"
+
+    if valor is None:
+        return "nil"
+
+    return "desconocido"
 
 def p_statement_local(p):
     '''
     statement : LOCAL ID ASSIGN value
     '''
     print("Declaracion local valida:", p[2])
-    # --- SEMÁNTICA: alimenta tabla de símbolos para Regla #1 ---
+
+    print("VALOR =", p[4])
+    print("TIPO PYTHON =", type(p[4]))
+
     sem.registrar_variable_local(p[2], p.lineno(2))
+
+    tipo = p[4]["tipo"] if isinstance(p[4], dict) else inferir_tipo(p[4])
+    print("TIPO INFERIDO =", tipo)
+
+    sem.registrar_tipo_variable(p[2], tipo)
 
 def p_statement_global(p):
     '''
     statement : ID ASSIGN value
     '''
     print("Asignacion global valida:", p[1])
-    # --- SEMÁNTICA: alimenta tabla de símbolos para Regla #1 ---
+
     sem.registrar_variable_global(p[1], p.lineno(1))
+
+    tipo = p[3]["tipo"] if isinstance(p[3], dict) else inferir_tipo(p[3])
+    sem.registrar_tipo_variable(p[1], tipo)
 
 def p_value(p):
     '''
@@ -88,12 +123,22 @@ def p_expression_value(p):
                | FALSE
                | ID
     '''
-    p[0] = p[1]
-    # --- SEMÁNTICA: Regla #1 (Nahin Espinoza) - variable no declarada ---
-    # Solo aplica cuando la expresión es un identificador (ID),
-    # ya que NUMBER/STRING/TRUE/FALSE son literales sin nombre.
-    if p.slice[1].type == 'ID':
+
+    if p.slice[1].type == "NUMBER":
+        p[0] = {"tipo": "number"}
+
+    elif p.slice[1].type == "STRING":
+        p[0] = {"tipo": "string"}
+
+    elif p.slice[1].type in ["TRUE", "FALSE"]:
+        p[0] = {"tipo": "boolean"}
+
+    else:
+        # ID
         sem.regla_variable_no_declarada(p[1], p.lineno(1))
+        tipo = sem.obtener_tipo_variable(p[1])
+        p[0] = {"tipo": tipo}
+
 
 def p_empty(p):
     'empty :'
@@ -196,6 +241,12 @@ def p_expression_not(p):
     '''
     pass
 
+def p_statement_break(p):
+    '''
+    statement : BREAK
+    '''
+    sem.regla_break(p.lineno(1))
+
 # ERRORES
 def p_error(p):
     if p:
@@ -267,23 +318,17 @@ def p_expression_binop(p):
                | expression MOD expression
                | expression POWER expression
     '''
-    izq, op, der = p[1], p[2], p[3]
- 
-    if op == '+':
-        p[0] = izq + der if isinstance(izq, (int, float)) and isinstance(der, (int, float)) else True
-    elif op == '-':
-        p[0] = izq - der if isinstance(izq, (int, float)) and isinstance(der, (int, float)) else True
-    elif op == '*':
-        p[0] = izq * der if isinstance(izq, (int, float)) and isinstance(der, (int, float)) else True
-    elif op == '/':
-        p[0] = izq / der if isinstance(izq, (int, float)) and isinstance(der, (int, float)) and der != 0 else True
-    elif op == '%':
-        p[0] = izq % der if isinstance(izq, (int, float)) and isinstance(der, (int, float)) and der != 0 else True
-    elif op == '^':
-        p[0] = izq ** der if isinstance(izq, (int, float)) and isinstance(der, (int, float)) else True
- 
-    print(f"Expresión aritmética válida: {izq} {op} {der} -> {p[0]}")
- 
+
+    izq = p[1]["tipo"] if isinstance(p[1], dict) else inferir_tipo(p[1])
+    der = p[3]["tipo"] if isinstance(p[3], dict) else inferir_tipo(p[3])
+
+    op = p[2]
+
+    sem.regla_operacion(izq, der, op, p.lineno(1))
+
+    # resultado tipo
+    p[0] = {"tipo": "number"}
+
  
 def p_expression_uminus(p):
     '''
@@ -307,10 +352,13 @@ def p_expression_concat(p):
     '''
     expression : expression CONCAT expression
     '''
-    izq, der = p[1], p[3]
-    p[0] = f"{izq}{der}"
-    print(f"Concatenación válida: {izq} .. {der} -> {p[0]}") 
 
+    izq = p[1]["tipo"] if isinstance(p[1], dict) else inferir_tipo(p[1])
+    der = p[3]["tipo"] if isinstance(p[3], dict) else inferir_tipo(p[3])
+
+    sem.regla_operacion(izq, der, "..", p.lineno(1))
+
+    p[0] = {"tipo": "string"}
 # ------------------------------------------------------------
 # 1) ESTRUCTURA WHILE
 # ------------------------------------------------------------
@@ -318,7 +366,11 @@ def p_statement_while(p):
     '''
     statement : WHILE expression DO program END
     '''
+    sem.loop_stack.append("while")  
+
     print("WHILE válido")
+
+    sem.loop_stack.pop()
 
 # ------------------------------------------------------------
 # 2)    ESTRUCTURA FOR (numérico): for i = inicio, fin [, paso] do ... end
@@ -326,11 +378,8 @@ def p_statement_while(p):
 def p_for_header(p):
     '''
     for_header : FOR ID ASSIGN expression COMMA expression DO
-               | FOR ID ASSIGN expression COMMA expression COMMA expression DO
     '''
-    # Se ejecuta ANTES de reducir 'program' (cuerpo del for), por lo
-    # que aquí registramos la variable de control para que sea válida
-    # dentro del cuerpo del bucle (ej. 'for i = 1, 10 do ... i ... end')
+    sem.loop_stack.append("for")   
     sem.registrar_variable_global(p[2], p.lineno(2))
     p[0] = p[2]
  
@@ -339,7 +388,9 @@ def p_statement_for(p):
     statement : for_header program END
     '''
     print(f"FOR válido: variable de control '{p[1]}'")
- 
+
+    sem.loop_stack.pop()  
+    
 # ------------------------------------------------------------
 # 3) DICCIONARIOS / TABLES (clave = valor), estilo Lua
 #    Ejemplo:  local persona = { nombre = "Ana", edad = 20 }

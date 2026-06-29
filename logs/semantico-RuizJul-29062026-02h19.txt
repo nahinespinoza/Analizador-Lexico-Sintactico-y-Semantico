@@ -1,0 +1,26 @@
+LOG DE ANÁLISIS SEMÁNTICO
+==================================================
+
+CÓDIGO ANALIZADO:
+
+local edad = 20
+local nombre = "Julian"
+activo = true
+dato = nil
+
+
+TABLA DE SÍMBOLOS - VARIABLES
+--------------------------------------------------
+NOMBRE              TIPO        LÍNEA
+edad                local       2
+nombre              local       3
+activo              global      4
+dato                global      5
+
+TABLA DE SÍMBOLOS - FUNCIONES
+--------------------------------------------------
+No se registraron funciones.
+
+ERRORES SEMÁNTICOS ENCONTRADOS:
+--------------------------------------------------
+Sin errores semánticos.

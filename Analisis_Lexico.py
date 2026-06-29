@@ -36,6 +36,7 @@ tokens = (
     'OR',       # or
     'NOT',      # not
     'CONCAT',   # ..
+    'BREAK',
     # Auxiliares mínimos para procesar el algoritmo1.lua
     'ID',
     'ASSIGN',
@@ -266,6 +267,7 @@ reserved = {
     'and': 'AND',
     'or':  'OR',
     'not': 'NOT',
+    'break': 'BREAK',
 }
 
 def t_ID(t):

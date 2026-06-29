@@ -1,0 +1,24 @@
+LOG DE ANÁLISIS SEMÁNTICO
+==================================================
+
+CÓDIGO ANALIZADO:
+
+local a = 10
+local b = "hola"
+local c = a + b
+
+
+TABLA DE SÍMBOLOS - VARIABLES
+--------------------------------------------------
+NOMBRE              TIPO        LÍNEA
+a                   local       6
+b                   local       7
+c                   local       8
+
+TABLA DE SÍMBOLOS - FUNCIONES
+--------------------------------------------------
+No se registraron funciones.
+
+ERRORES SEMÁNTICOS ENCONTRADOS:
+--------------------------------------------------
+- Línea 0: operación inválida number + string
