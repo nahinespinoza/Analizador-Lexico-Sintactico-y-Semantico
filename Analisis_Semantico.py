@@ -137,7 +137,9 @@ def regla_operacion(tipo_izq, tipo_der, operador, linea):
     # -------------------------
     # ARITMÉTICAS
     # -------------------------
-    if operador in ["+", "-", "*", "/"]:
+    if operador in ["+", "-", "*", "/", "%", "^"]:
+        if tipo_izq == "any" or tipo_der == "any":
+            return True
         if tipo_izq != "number" or tipo_der != "number":
             error(tipo_izq, tipo_der, operador, linea)
             return False
@@ -147,6 +149,8 @@ def regla_operacion(tipo_izq, tipo_der, operador, linea):
     # CONCATENACIÓN LUA
     # -------------------------
     if operador == "..":
+        if tipo_izq == "any" or tipo_der == "any":
+            return True
         if tipo_izq != "string" or tipo_der != "string":
             error(f"Línea {linea}: concatenación inválida {tipo_izq} .. {tipo_der}")
             return False

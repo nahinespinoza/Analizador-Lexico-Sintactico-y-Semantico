@@ -13,6 +13,7 @@ def p_program(p):
     '''
     program : program statement
             | statement
+            | empty
     '''
     pass
 
@@ -48,14 +49,15 @@ def p_statement_local(p):
     '''
     print("Declaracion local valida:", p[2])
 
-    print("VALOR =", p[4])
-    print("TIPO PYTHON =", type(p[4]))
-
     sem.registrar_variable_local(p[2], p.lineno(2))
 
-    tipo = p[4]["tipo"] if isinstance(p[4], dict) else inferir_tipo(p[4])
-    print("TIPO INFERIDO =", tipo)
+    # Manejo seguro del tipo
+    if isinstance(p[4], dict) and "tipo" in p[4]:
+        tipo = p[4]["tipo"]
+    else:
+        tipo = inferir_tipo(p[4])
 
+    print("TIPO INFERIDO =", tipo)
     sem.registrar_tipo_variable(p[2], tipo)
 
 def p_statement_global(p):
@@ -66,7 +68,11 @@ def p_statement_global(p):
 
     sem.registrar_variable_global(p[1], p.lineno(1))
 
-    tipo = p[3]["tipo"] if isinstance(p[3], dict) else inferir_tipo(p[3])
+    if isinstance(p[3], dict) and "tipo" in p[3]:
+        tipo = p[3]["tipo"]
+    else:
+        tipo = inferir_tipo(p[3])
+
     sem.registrar_tipo_variable(p[1], tipo)
 
 def p_value(p):
@@ -173,12 +179,15 @@ def p_param_list(p):
     # Cuenta los parámetros (se guardan en tabla_funciones, Regla #2)
     # y registra cada uno como variable válida dentro del cuerpo
     # de la función (evita falsos positivos en Regla #1).
+    # DESPUÉS
     if len(p) == 4:
         p[0] = p[1] + 1
         sem.registrar_variable_global(p[3], p.lineno(3))
+        sem.registrar_tipo_variable(p[3], "any")
     elif len(p) == 2 and p[1] not in (None, ''):
         p[0] = 1
         sem.registrar_variable_global(p[1], p.lineno(1))
+        sem.registrar_tipo_variable(p[1], "any")
     else:
         p[0] = 0
 
@@ -324,7 +333,7 @@ def p_expression_binop(p):
 
     op = p[2]
 
-    sem.regla_operacion(izq, der, op, p.lineno(1))
+    sem.regla_operacion(izq, der, op, p.lineno(2))
 
     # resultado tipo
     p[0] = {"tipo": "number"}
@@ -356,7 +365,7 @@ def p_expression_concat(p):
     izq = p[1]["tipo"] if isinstance(p[1], dict) else inferir_tipo(p[1])
     der = p[3]["tipo"] if isinstance(p[3], dict) else inferir_tipo(p[3])
 
-    sem.regla_operacion(izq, der, "..", p.lineno(1))
+    sem.regla_operacion(izq, der, "..", p.lineno(2))
 
     p[0] = {"tipo": "string"}
 # ------------------------------------------------------------
