@@ -33,8 +33,18 @@ def reset_semantico():
     tabla_funciones.clear()
     SEMANTIC_ERRORS.clear()
 
-def error(t1, t2, op, linea):
-    msg = f"Línea {linea}: operación inválida {t1} {op} {t2}"
+def error(*args):
+
+    if len(args) == 4:
+        t1, t2, op, linea = args
+        msg = f"Línea {linea}: operación inválida {t1} {op} {t2}"
+
+    elif len(args) == 1:
+        msg = args[0]
+
+    else:
+        msg = "Error semántico desconocido"
+
     print("⚠️", msg)
     SEMANTIC_ERRORS.append(msg)
 

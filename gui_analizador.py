@@ -122,7 +122,8 @@ class AnalizadorGUI:
         try:
             import os
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            ruta = os.path.join(script_dir, "algoritmo_sintactico_EspinozaNahin.lua")
+            #ruta = os.path.join(script_dir, "algoritmo_sintactico_EspinozaNahin.lua")
+            ruta = os.path.join(script_dir, "algoritmo_sintactico_RuizJul.lua")
             with open(ruta, "r", encoding="utf-8") as f:
                 self.codigo_text.delete("1.0", tk.END)
                 self.codigo_text.insert(tk.END, f.read())
@@ -134,7 +135,8 @@ class AnalizadorGUI:
         try:
             import os
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            ruta = os.path.join(script_dir, "algoritmo_semantico_EspinozaNahin.lua")
+            #ruta = os.path.join(script_dir, "algoritmo_semantico_EspinozaNahin.lua")
+            ruta = os.path.join(script_dir, "algoritmo_semantico_RuizJul.lua")
             with open(ruta, "r", encoding="utf-8") as f:
                 self.codigo_text.delete("1.0", tk.END)
                 self.codigo_text.insert(tk.END, f.read())
