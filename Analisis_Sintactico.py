@@ -387,6 +387,7 @@ def p_statement_while(p):
 def p_for_header(p):
     '''
     for_header : FOR ID ASSIGN expression COMMA expression DO
+               | FOR ID ASSIGN expression COMMA expression COMMA expression DO
     '''
     sem.loop_stack.append("for")   
     sem.registrar_variable_global(p[2], p.lineno(2))

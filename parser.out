@@ -59,41 +59,42 @@ Rule 53    expression -> LPAREN expression RPAREN
 Rule 54    expression -> expression CONCAT expression
 Rule 55    statement -> WHILE expression DO program END
 Rule 56    for_header -> FOR ID ASSIGN expression COMMA expression DO
-Rule 57    statement -> for_header program END
-Rule 58    value -> LBRACE table_fields RBRACE
-Rule 59    table_fields -> table_fields COMMA table_field
-Rule 60    table_fields -> table_field
-Rule 61    table_fields -> empty
-Rule 62    table_field -> ID ASSIGN value
-Rule 63    expression -> ID LBRACKET value RBRACKET
-Rule 64    value -> ID DOT ID LPAREN RPAREN
+Rule 57    for_header -> FOR ID ASSIGN expression COMMA expression COMMA expression DO
+Rule 58    statement -> for_header program END
+Rule 59    value -> LBRACE table_fields RBRACE
+Rule 60    table_fields -> table_fields COMMA table_field
+Rule 61    table_fields -> table_field
+Rule 62    table_fields -> empty
+Rule 63    table_field -> ID ASSIGN value
+Rule 64    expression -> ID LBRACKET value RBRACKET
+Rule 65    value -> ID DOT ID LPAREN RPAREN
 
 Terminals, with rules where they appear
 
 AND                  : 41
-ASSIGN               : 4 5 35 56 62
+ASSIGN               : 4 5 35 56 57 63
 BREAK                : 44
-COMMA                : 28 32 36 56 59
+COMMA                : 28 32 36 56 57 57 60
 CONCAT               : 54
 DIVIDE               : 49
-DO                   : 55 56
-DOT                  : 64
+DO                   : 55 56 57
+DOT                  : 65
 ELSE                 : 14
 ELSEIF               : 18
-END                  : 13 25 26 27 55 57
+END                  : 13 25 26 27 55 58
 EQ                   : 11
 FALSE                : 22
-FOR                  : 56
+FOR                  : 56 57
 FUNCTION             : 25 26 27
 GE                   : 9
 GT                   : 7
-ID                   : 4 5 23 25 26 27 28 29 31 35 39 56 62 63 64 64
+ID                   : 4 5 23 25 26 27 28 29 31 35 39 56 57 63 64 65 65
 IF                   : 13
-LBRACE               : 35 58
-LBRACKET             : 39 63
+LBRACE               : 35 59
+LBRACKET             : 39 64
 LE                   : 10
 LOCAL                : 4
-LPAREN               : 25 26 27 31 53 64
+LPAREN               : 25 26 27 31 53 65
 LT                   : 8
 MINUS                : 47 52
 MOD                  : 50
@@ -104,10 +105,10 @@ NUMBER               : 19
 OR                   : 42
 PLUS                 : 46
 POWER                : 51
-RBRACE               : 35 58
-RBRACKET             : 39 63
+RBRACE               : 35 59
+RBRACKET             : 39 64
 RETURN               : 26 27
-RPAREN               : 25 26 27 31 53 64
+RPAREN               : 25 26 27 31 53 65
 STRING               : 20
 THEN                 : 13 18
 TIMES                : 48
@@ -121,16 +122,16 @@ array_access         : 40
 else_part            : 13
 elseif_clause        : 16
 elseif_list          : 13 16
-empty                : 3 15 17 27 30 34 38 61
-expression           : 7 7 8 8 9 9 10 10 11 11 12 12 13 18 26 27 41 41 42 42 43 45 46 46 47 47 48 48 49 49 50 50 51 51 52 53 54 54 55 56 56
-for_header           : 57
+empty                : 3 15 17 27 30 34 38 62
+expression           : 7 7 8 8 9 9 10 10 11 11 12 12 13 18 26 27 41 41 42 42 43 45 46 46 47 47 48 48 49 49 50 50 51 51 52 53 54 54 55 56 56 57 57 57
+for_header           : 58
 param_list           : 25 26 27 28
 print_args           : 31 32
-program              : 1 13 14 18 25 26 55 57 0
+program              : 1 13 14 18 25 26 55 58 0
 statement            : 1 2
-table_field          : 59 60
-table_fields         : 58 59
-value                : 4 5 32 33 36 37 39 62 63
+table_field          : 60 61
+table_fields         : 59 60
+value                : 4 5 32 33 36 37 39 63 64
 value_list           : 35 36
 
 Parsing method: LALR
@@ -151,9 +152,10 @@ state 0
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (24) empty -> .
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
   ! shift/reduce conflict for LOCAL resolved as shift
   ! shift/reduce conflict for ID resolved as shift
@@ -198,8 +200,9 @@ state 1
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
     LOCAL           shift and go to state 4
     ID              shift and go to state 5
@@ -290,7 +293,7 @@ state 6
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -356,7 +359,7 @@ state 9
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -371,7 +374,7 @@ state 9
 
 state 10
 
-    (57) statement -> for_header . program END
+    (58) statement -> for_header . program END
     (1) program -> . program statement
     (2) program -> . statement
     (3) program -> . empty
@@ -385,9 +388,10 @@ state 10
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (24) empty -> .
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
   ! shift/reduce conflict for LOCAL resolved as shift
   ! shift/reduce conflict for ID resolved as shift
@@ -421,6 +425,7 @@ state 10
 state 11
 
     (56) for_header -> FOR . ID ASSIGN expression COMMA expression DO
+    (57) for_header -> FOR . ID ASSIGN expression COMMA expression COMMA expression DO
 
     ID              shift and go to state 28
 
@@ -457,8 +462,8 @@ state 14
     (6) value -> . NIL
     (40) value -> . array_access
     (45) value -> . expression
-    (58) value -> . LBRACE table_fields RBRACE
-    (64) value -> . ID DOT ID LPAREN RPAREN
+    (59) value -> . LBRACE table_fields RBRACE
+    (65) value -> . ID DOT ID LPAREN RPAREN
     (39) array_access -> . ID LBRACKET value RBRACKET
     (7) expression -> . expression GT expression
     (8) expression -> . expression LT expression
@@ -483,7 +488,7 @@ state 14
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     LBRACE          shift and go to state 32
     NIL             shift and go to state 33
@@ -509,8 +514,8 @@ state 15
     (6) value -> . NIL
     (40) value -> . array_access
     (45) value -> . expression
-    (58) value -> . LBRACE table_fields RBRACE
-    (64) value -> . ID DOT ID LPAREN RPAREN
+    (59) value -> . LBRACE table_fields RBRACE
+    (65) value -> . ID DOT ID LPAREN RPAREN
     (24) empty -> .
     (39) array_access -> . ID LBRACKET value RBRACKET
     (7) expression -> . expression GT expression
@@ -536,7 +541,7 @@ state 15
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NIL             shift and go to state 33
     LBRACE          shift and go to state 39
@@ -753,7 +758,7 @@ state 20
 state 21
 
     (23) expression -> ID .
-    (63) expression -> ID . LBRACKET value RBRACKET
+    (64) expression -> ID . LBRACKET value RBRACKET
 
     THEN            reduce using rule 23 (expression -> ID .)
     GT              reduce using rule 23 (expression -> ID .)
@@ -817,7 +822,7 @@ state 22
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -856,7 +861,7 @@ state 23
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -895,7 +900,7 @@ state 24
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -956,7 +961,7 @@ state 26
 
 state 27
 
-    (57) statement -> for_header program . END
+    (58) statement -> for_header program . END
     (1) program -> program . statement
     (4) statement -> . LOCAL ID ASSIGN value
     (5) statement -> . ID ASSIGN value
@@ -968,8 +973,9 @@ state 27
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
     END             shift and go to state 62
     LOCAL           shift and go to state 4
@@ -986,6 +992,7 @@ state 27
 state 28
 
     (56) for_header -> FOR ID . ASSIGN expression COMMA expression DO
+    (57) for_header -> FOR ID . ASSIGN expression COMMA expression COMMA expression DO
 
     ASSIGN          shift and go to state 63
 
@@ -996,8 +1003,8 @@ state 29
     (6) value -> . NIL
     (40) value -> . array_access
     (45) value -> . expression
-    (58) value -> . LBRACE table_fields RBRACE
-    (64) value -> . ID DOT ID LPAREN RPAREN
+    (59) value -> . LBRACE table_fields RBRACE
+    (65) value -> . ID DOT ID LPAREN RPAREN
     (39) array_access -> . ID LBRACKET value RBRACKET
     (7) expression -> . expression GT expression
     (8) expression -> . expression LT expression
@@ -1022,7 +1029,7 @@ state 29
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NIL             shift and go to state 33
     LBRACE          shift and go to state 39
@@ -1041,10 +1048,10 @@ state 29
 
 state 30
 
-    (64) value -> ID . DOT ID LPAREN RPAREN
+    (65) value -> ID . DOT ID LPAREN RPAREN
     (39) array_access -> ID . LBRACKET value RBRACKET
     (23) expression -> ID .
-    (63) expression -> ID . LBRACKET value RBRACKET
+    (64) expression -> ID . LBRACKET value RBRACKET
 
     DOT             shift and go to state 65
     LBRACKET        shift and go to state 66
@@ -1102,20 +1109,20 @@ state 31
 state 32
 
     (35) statement -> ID ASSIGN LBRACE . value_list RBRACE
-    (58) value -> LBRACE . table_fields RBRACE
+    (59) value -> LBRACE . table_fields RBRACE
     (36) value_list -> . value_list COMMA value
     (37) value_list -> . value
     (38) value_list -> . empty
-    (59) table_fields -> . table_fields COMMA table_field
-    (60) table_fields -> . table_field
-    (61) table_fields -> . empty
+    (60) table_fields -> . table_fields COMMA table_field
+    (61) table_fields -> . table_field
+    (62) table_fields -> . empty
     (6) value -> . NIL
     (40) value -> . array_access
     (45) value -> . expression
-    (58) value -> . LBRACE table_fields RBRACE
-    (64) value -> . ID DOT ID LPAREN RPAREN
+    (59) value -> . LBRACE table_fields RBRACE
+    (65) value -> . ID DOT ID LPAREN RPAREN
     (24) empty -> .
-    (62) table_field -> . ID ASSIGN value
+    (63) table_field -> . ID ASSIGN value
     (39) array_access -> . ID LBRACKET value RBRACKET
     (7) expression -> . expression GT expression
     (8) expression -> . expression LT expression
@@ -1140,7 +1147,7 @@ state 32
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NIL             shift and go to state 33
     LBRACE          shift and go to state 39
@@ -1286,11 +1293,11 @@ state 38
 
 state 39
 
-    (58) value -> LBRACE . table_fields RBRACE
-    (59) table_fields -> . table_fields COMMA table_field
-    (60) table_fields -> . table_field
-    (61) table_fields -> . empty
-    (62) table_field -> . ID ASSIGN value
+    (59) value -> LBRACE . table_fields RBRACE
+    (60) table_fields -> . table_fields COMMA table_field
+    (61) table_fields -> . table_field
+    (62) table_fields -> . empty
+    (63) table_field -> . ID ASSIGN value
     (24) empty -> .
 
     ID              shift and go to state 76
@@ -1317,9 +1324,10 @@ state 40
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (24) empty -> .
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
   ! shift/reduce conflict for LOCAL resolved as shift
   ! shift/reduce conflict for ID resolved as shift
@@ -1378,7 +1386,7 @@ state 41
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1417,7 +1425,7 @@ state 42
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1456,7 +1464,7 @@ state 43
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1495,7 +1503,7 @@ state 44
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1534,7 +1542,7 @@ state 45
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1573,7 +1581,7 @@ state 46
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1612,7 +1620,7 @@ state 47
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1651,7 +1659,7 @@ state 48
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1690,7 +1698,7 @@ state 49
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1729,7 +1737,7 @@ state 50
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1768,7 +1776,7 @@ state 51
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1807,7 +1815,7 @@ state 52
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1846,7 +1854,7 @@ state 53
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1885,7 +1893,7 @@ state 54
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1924,7 +1932,7 @@ state 55
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -1939,12 +1947,12 @@ state 55
 
 state 56
 
-    (63) expression -> ID LBRACKET . value RBRACKET
+    (64) expression -> ID LBRACKET . value RBRACKET
     (6) value -> . NIL
     (40) value -> . array_access
     (45) value -> . expression
-    (58) value -> . LBRACE table_fields RBRACE
-    (64) value -> . ID DOT ID LPAREN RPAREN
+    (59) value -> . LBRACE table_fields RBRACE
+    (65) value -> . ID DOT ID LPAREN RPAREN
     (39) array_access -> . ID LBRACKET value RBRACKET
     (7) expression -> . expression GT expression
     (8) expression -> . expression LT expression
@@ -1969,7 +1977,7 @@ state 56
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NIL             shift and go to state 33
     LBRACE          shift and go to state 39
@@ -2211,9 +2219,10 @@ state 61
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (24) empty -> .
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
   ! shift/reduce conflict for LOCAL resolved as shift
   ! shift/reduce conflict for ID resolved as shift
@@ -2246,25 +2255,26 @@ state 61
 
 state 62
 
-    (57) statement -> for_header program END .
+    (58) statement -> for_header program END .
 
-    LOCAL           reduce using rule 57 (statement -> for_header program END .)
-    ID              reduce using rule 57 (statement -> for_header program END .)
-    IF              reduce using rule 57 (statement -> for_header program END .)
-    FUNCTION        reduce using rule 57 (statement -> for_header program END .)
-    BREAK           reduce using rule 57 (statement -> for_header program END .)
-    WHILE           reduce using rule 57 (statement -> for_header program END .)
-    FOR             reduce using rule 57 (statement -> for_header program END .)
-    $end            reduce using rule 57 (statement -> for_header program END .)
-    END             reduce using rule 57 (statement -> for_header program END .)
-    ELSE            reduce using rule 57 (statement -> for_header program END .)
-    ELSEIF          reduce using rule 57 (statement -> for_header program END .)
-    RETURN          reduce using rule 57 (statement -> for_header program END .)
+    LOCAL           reduce using rule 58 (statement -> for_header program END .)
+    ID              reduce using rule 58 (statement -> for_header program END .)
+    IF              reduce using rule 58 (statement -> for_header program END .)
+    FUNCTION        reduce using rule 58 (statement -> for_header program END .)
+    BREAK           reduce using rule 58 (statement -> for_header program END .)
+    WHILE           reduce using rule 58 (statement -> for_header program END .)
+    FOR             reduce using rule 58 (statement -> for_header program END .)
+    $end            reduce using rule 58 (statement -> for_header program END .)
+    END             reduce using rule 58 (statement -> for_header program END .)
+    ELSE            reduce using rule 58 (statement -> for_header program END .)
+    ELSEIF          reduce using rule 58 (statement -> for_header program END .)
+    RETURN          reduce using rule 58 (statement -> for_header program END .)
 
 
 state 63
 
     (56) for_header -> FOR ID ASSIGN . expression COMMA expression DO
+    (57) for_header -> FOR ID ASSIGN . expression COMMA expression COMMA expression DO
     (7) expression -> . expression GT expression
     (8) expression -> . expression LT expression
     (9) expression -> . expression GE expression
@@ -2288,7 +2298,7 @@ state 63
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -2321,7 +2331,7 @@ state 64
 
 state 65
 
-    (64) value -> ID DOT . ID LPAREN RPAREN
+    (65) value -> ID DOT . ID LPAREN RPAREN
 
     ID              shift and go to state 100
 
@@ -2329,12 +2339,12 @@ state 65
 state 66
 
     (39) array_access -> ID LBRACKET . value RBRACKET
-    (63) expression -> ID LBRACKET . value RBRACKET
+    (64) expression -> ID LBRACKET . value RBRACKET
     (6) value -> . NIL
     (40) value -> . array_access
     (45) value -> . expression
-    (58) value -> . LBRACE table_fields RBRACE
-    (64) value -> . ID DOT ID LPAREN RPAREN
+    (59) value -> . LBRACE table_fields RBRACE
+    (65) value -> . ID DOT ID LPAREN RPAREN
     (39) array_access -> . ID LBRACKET value RBRACKET
     (7) expression -> . expression GT expression
     (8) expression -> . expression LT expression
@@ -2359,7 +2369,7 @@ state 66
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NIL             shift and go to state 33
     LBRACE          shift and go to state 39
@@ -2378,11 +2388,11 @@ state 66
 
 state 67
 
-    (64) value -> ID . DOT ID LPAREN RPAREN
-    (62) table_field -> ID . ASSIGN value
+    (65) value -> ID . DOT ID LPAREN RPAREN
+    (63) table_field -> ID . ASSIGN value
     (39) array_access -> ID . LBRACKET value RBRACKET
     (23) expression -> ID .
-    (63) expression -> ID . LBRACKET value RBRACKET
+    (64) expression -> ID . LBRACKET value RBRACKET
 
     DOT             shift and go to state 65
     ASSIGN          shift and go to state 102
@@ -2417,8 +2427,8 @@ state 68
 
 state 69
 
-    (58) value -> LBRACE table_fields . RBRACE
-    (59) table_fields -> table_fields . COMMA table_field
+    (59) value -> LBRACE table_fields . RBRACE
+    (60) table_fields -> table_fields . COMMA table_field
 
     RBRACE          shift and go to state 105
     COMMA           shift and go to state 106
@@ -2435,23 +2445,23 @@ state 70
 state 71
 
     (38) value_list -> empty .
-    (61) table_fields -> empty .
+    (62) table_fields -> empty .
 
   ! reduce/reduce conflict for RBRACE resolved using rule 38 (value_list -> empty .)
   ! reduce/reduce conflict for COMMA resolved using rule 38 (value_list -> empty .)
     RBRACE          reduce using rule 38 (value_list -> empty .)
     COMMA           reduce using rule 38 (value_list -> empty .)
 
-  ! RBRACE          [ reduce using rule 61 (table_fields -> empty .) ]
-  ! COMMA           [ reduce using rule 61 (table_fields -> empty .) ]
+  ! RBRACE          [ reduce using rule 62 (table_fields -> empty .) ]
+  ! COMMA           [ reduce using rule 62 (table_fields -> empty .) ]
 
 
 state 72
 
-    (60) table_fields -> table_field .
+    (61) table_fields -> table_field .
 
-    RBRACE          reduce using rule 60 (table_fields -> table_field .)
-    COMMA           reduce using rule 60 (table_fields -> table_field .)
+    RBRACE          reduce using rule 61 (table_fields -> table_field .)
+    COMMA           reduce using rule 61 (table_fields -> table_field .)
 
 
 state 73
@@ -2478,8 +2488,8 @@ state 74
     (6) value -> . NIL
     (40) value -> . array_access
     (45) value -> . expression
-    (58) value -> . LBRACE table_fields RBRACE
-    (64) value -> . ID DOT ID LPAREN RPAREN
+    (59) value -> . LBRACE table_fields RBRACE
+    (65) value -> . ID DOT ID LPAREN RPAREN
     (39) array_access -> . ID LBRACKET value RBRACKET
     (7) expression -> . expression GT expression
     (8) expression -> . expression LT expression
@@ -2504,7 +2514,7 @@ state 74
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NIL             shift and go to state 33
     LBRACE          shift and go to state 39
@@ -2523,15 +2533,15 @@ state 74
 
 state 75
 
-    (61) table_fields -> empty .
+    (62) table_fields -> empty .
 
-    RBRACE          reduce using rule 61 (table_fields -> empty .)
-    COMMA           reduce using rule 61 (table_fields -> empty .)
+    RBRACE          reduce using rule 62 (table_fields -> empty .)
+    COMMA           reduce using rule 62 (table_fields -> empty .)
 
 
 state 76
 
-    (62) table_field -> ID . ASSIGN value
+    (63) table_field -> ID . ASSIGN value
 
     ASSIGN          shift and go to state 102
 
@@ -2552,9 +2562,10 @@ state 77
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (24) empty -> .
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
     LOCAL           shift and go to state 4
     ID              shift and go to state 5
@@ -3624,7 +3635,7 @@ state 92
 
 state 93
 
-    (63) expression -> ID LBRACKET value . RBRACKET
+    (64) expression -> ID LBRACKET value . RBRACKET
 
     RBRACKET        shift and go to state 110
 
@@ -3709,8 +3720,9 @@ state 98
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
     END             shift and go to state 113
     LOCAL           shift and go to state 4
@@ -3727,6 +3739,7 @@ state 98
 state 99
 
     (56) for_header -> FOR ID ASSIGN expression . COMMA expression DO
+    (57) for_header -> FOR ID ASSIGN expression . COMMA expression COMMA expression DO
     (7) expression -> expression . GT expression
     (8) expression -> expression . LT expression
     (9) expression -> expression . GE expression
@@ -3763,7 +3776,7 @@ state 99
 
 state 100
 
-    (64) value -> ID DOT ID . LPAREN RPAREN
+    (65) value -> ID DOT ID . LPAREN RPAREN
 
     LPAREN          shift and go to state 115
 
@@ -3771,19 +3784,19 @@ state 100
 state 101
 
     (39) array_access -> ID LBRACKET value . RBRACKET
-    (63) expression -> ID LBRACKET value . RBRACKET
+    (64) expression -> ID LBRACKET value . RBRACKET
 
     RBRACKET        shift and go to state 116
 
 
 state 102
 
-    (62) table_field -> ID ASSIGN . value
+    (63) table_field -> ID ASSIGN . value
     (6) value -> . NIL
     (40) value -> . array_access
     (45) value -> . expression
-    (58) value -> . LBRACE table_fields RBRACE
-    (64) value -> . ID DOT ID LPAREN RPAREN
+    (59) value -> . LBRACE table_fields RBRACE
+    (65) value -> . ID DOT ID LPAREN RPAREN
     (39) array_access -> . ID LBRACKET value RBRACKET
     (7) expression -> . expression GT expression
     (8) expression -> . expression LT expression
@@ -3808,7 +3821,7 @@ state 102
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NIL             shift and go to state 33
     LBRACE          shift and go to state 39
@@ -3849,8 +3862,8 @@ state 104
     (6) value -> . NIL
     (40) value -> . array_access
     (45) value -> . expression
-    (58) value -> . LBRACE table_fields RBRACE
-    (64) value -> . ID DOT ID LPAREN RPAREN
+    (59) value -> . LBRACE table_fields RBRACE
+    (65) value -> . ID DOT ID LPAREN RPAREN
     (39) array_access -> . ID LBRACKET value RBRACKET
     (7) expression -> . expression GT expression
     (8) expression -> . expression LT expression
@@ -3875,7 +3888,7 @@ state 104
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NIL             shift and go to state 33
     LBRACE          shift and go to state 39
@@ -3894,30 +3907,30 @@ state 104
 
 state 105
 
-    (58) value -> LBRACE table_fields RBRACE .
+    (59) value -> LBRACE table_fields RBRACE .
 
-    LOCAL           reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    ID              reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    IF              reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    FUNCTION        reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    BREAK           reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    WHILE           reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    FOR             reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    $end            reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    END             reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    ELSE            reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    ELSEIF          reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    RETURN          reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    RPAREN          reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    COMMA           reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    RBRACE          reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
-    RBRACKET        reduce using rule 58 (value -> LBRACE table_fields RBRACE .)
+    LOCAL           reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    ID              reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    IF              reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    FUNCTION        reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    BREAK           reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    WHILE           reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    FOR             reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    $end            reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    END             reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    ELSE            reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    ELSEIF          reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    RETURN          reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    RPAREN          reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    COMMA           reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    RBRACE          reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
+    RBRACKET        reduce using rule 59 (value -> LBRACE table_fields RBRACE .)
 
 
 state 106
 
-    (59) table_fields -> table_fields COMMA . table_field
-    (62) table_field -> . ID ASSIGN value
+    (60) table_fields -> table_fields COMMA . table_field
+    (63) table_field -> . ID ASSIGN value
 
     ID              shift and go to state 76
 
@@ -3959,41 +3972,41 @@ state 109
 
 state 110
 
-    (63) expression -> ID LBRACKET value RBRACKET .
+    (64) expression -> ID LBRACKET value RBRACKET .
 
-    THEN            reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    GT              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    LT              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    GE              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    LE              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    EQ              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    NE              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    AND             reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    OR              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    PLUS            reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    MINUS           reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    TIMES           reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    DIVIDE          reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    MOD             reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    POWER           reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    CONCAT          reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    DO              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    LOCAL           reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    ID              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    IF              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    FUNCTION        reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    BREAK           reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    WHILE           reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    FOR             reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    $end            reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    END             reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    ELSE            reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    ELSEIF          reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    RETURN          reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    RPAREN          reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    COMMA           reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    RBRACE          reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    RBRACKET        reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
+    THEN            reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    GT              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    LT              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    GE              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    LE              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    EQ              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    NE              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    AND             reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    OR              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    PLUS            reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    MINUS           reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    TIMES           reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    DIVIDE          reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    MOD             reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    POWER           reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    CONCAT          reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    DO              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    LOCAL           reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    ID              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    IF              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    FUNCTION        reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    BREAK           reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    WHILE           reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    FOR             reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    $end            reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    END             reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    ELSE            reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    ELSEIF          reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    RETURN          reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    RPAREN          reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    COMMA           reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    RBRACE          reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    RBRACKET        reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
 
 
 state 111
@@ -4015,8 +4028,9 @@ state 111
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
   ! shift/reduce conflict for LOCAL resolved as shift
   ! shift/reduce conflict for ID resolved as shift
@@ -4076,6 +4090,7 @@ state 113
 state 114
 
     (56) for_header -> FOR ID ASSIGN expression COMMA . expression DO
+    (57) for_header -> FOR ID ASSIGN expression COMMA . expression COMMA expression DO
     (7) expression -> . expression GT expression
     (8) expression -> . expression LT expression
     (9) expression -> . expression GE expression
@@ -4099,7 +4114,7 @@ state 114
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -4114,7 +4129,7 @@ state 114
 
 state 115
 
-    (64) value -> ID DOT ID LPAREN . RPAREN
+    (65) value -> ID DOT ID LPAREN . RPAREN
 
     RPAREN          shift and go to state 129
 
@@ -4122,7 +4137,7 @@ state 115
 state 116
 
     (39) array_access -> ID LBRACKET value RBRACKET .
-    (63) expression -> ID LBRACKET value RBRACKET .
+    (64) expression -> ID LBRACKET value RBRACKET .
 
   ! reduce/reduce conflict for LOCAL resolved using rule 39 (array_access -> ID LBRACKET value RBRACKET .)
   ! reduce/reduce conflict for ID resolved using rule 39 (array_access -> ID LBRACKET value RBRACKET .)
@@ -4156,46 +4171,46 @@ state 116
     COMMA           reduce using rule 39 (array_access -> ID LBRACKET value RBRACKET .)
     RBRACE          reduce using rule 39 (array_access -> ID LBRACKET value RBRACKET .)
     RBRACKET        reduce using rule 39 (array_access -> ID LBRACKET value RBRACKET .)
-    GT              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    LT              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    GE              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    LE              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    EQ              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    NE              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    AND             reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    OR              reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    PLUS            reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    MINUS           reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    TIMES           reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    DIVIDE          reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    MOD             reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    POWER           reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
-    CONCAT          reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .)
+    GT              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    LT              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    GE              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    LE              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    EQ              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    NE              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    AND             reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    OR              reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    PLUS            reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    MINUS           reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    TIMES           reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    DIVIDE          reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    MOD             reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    POWER           reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
+    CONCAT          reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .)
 
-  ! LOCAL           [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! ID              [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! IF              [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! FUNCTION        [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! BREAK           [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! WHILE           [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! FOR             [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! $end            [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! END             [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! ELSE            [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! ELSEIF          [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! RETURN          [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! RPAREN          [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! COMMA           [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! RBRACE          [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
-  ! RBRACKET        [ reduce using rule 63 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! LOCAL           [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! ID              [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! IF              [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! FUNCTION        [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! BREAK           [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! WHILE           [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! FOR             [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! $end            [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! END             [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! ELSE            [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! ELSEIF          [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! RETURN          [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! RPAREN          [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! COMMA           [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! RBRACE          [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
+  ! RBRACKET        [ reduce using rule 64 (expression -> ID LBRACKET value RBRACKET .) ]
 
 
 state 117
 
-    (62) table_field -> ID ASSIGN value .
+    (63) table_field -> ID ASSIGN value .
 
-    RBRACE          reduce using rule 62 (table_field -> ID ASSIGN value .)
-    COMMA           reduce using rule 62 (table_field -> ID ASSIGN value .)
+    RBRACE          reduce using rule 63 (table_field -> ID ASSIGN value .)
+    COMMA           reduce using rule 63 (table_field -> ID ASSIGN value .)
 
 
 state 118
@@ -4208,10 +4223,10 @@ state 118
 
 state 119
 
-    (59) table_fields -> table_fields COMMA table_field .
+    (60) table_fields -> table_fields COMMA table_field .
 
-    RBRACE          reduce using rule 59 (table_fields -> table_fields COMMA table_field .)
-    COMMA           reduce using rule 59 (table_fields -> table_fields COMMA table_field .)
+    RBRACE          reduce using rule 60 (table_fields -> table_fields COMMA table_field .)
+    COMMA           reduce using rule 60 (table_fields -> table_fields COMMA table_field .)
 
 
 state 120
@@ -4246,9 +4261,10 @@ state 122
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (24) empty -> .
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
   ! shift/reduce conflict for LOCAL resolved as shift
   ! shift/reduce conflict for ID resolved as shift
@@ -4312,7 +4328,7 @@ state 124
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -4340,8 +4356,9 @@ state 125
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
     END             shift and go to state 133
     RETURN          shift and go to state 134
@@ -4386,6 +4403,7 @@ state 127
 state 128
 
     (56) for_header -> FOR ID ASSIGN expression COMMA expression . DO
+    (57) for_header -> FOR ID ASSIGN expression COMMA expression . COMMA expression DO
     (7) expression -> expression . GT expression
     (8) expression -> expression . LT expression
     (9) expression -> expression . GE expression
@@ -4402,7 +4420,8 @@ state 128
     (51) expression -> expression . POWER expression
     (54) expression -> expression . CONCAT expression
 
-    DO              shift and go to state 136
+    DO              shift and go to state 137
+    COMMA           shift and go to state 136
     GT              shift and go to state 41
     LT              shift and go to state 42
     GE              shift and go to state 43
@@ -4422,24 +4441,24 @@ state 128
 
 state 129
 
-    (64) value -> ID DOT ID LPAREN RPAREN .
+    (65) value -> ID DOT ID LPAREN RPAREN .
 
-    LOCAL           reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    ID              reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    IF              reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    FUNCTION        reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    BREAK           reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    WHILE           reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    FOR             reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    $end            reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    END             reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    ELSE            reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    ELSEIF          reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    RETURN          reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    RPAREN          reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    COMMA           reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    RBRACE          reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
-    RBRACKET        reduce using rule 64 (value -> ID DOT ID LPAREN RPAREN .)
+    LOCAL           reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    ID              reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    IF              reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    FUNCTION        reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    BREAK           reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    WHILE           reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    FOR             reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    $end            reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    END             reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    ELSE            reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    ELSEIF          reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    RETURN          reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    RPAREN          reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    COMMA           reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    RBRACE          reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
+    RBRACKET        reduce using rule 65 (value -> ID DOT ID LPAREN RPAREN .)
 
 
 state 130
@@ -4474,8 +4493,9 @@ state 131
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
     END             reduce using rule 14 (else_part -> ELSE program .)
     LOCAL           shift and go to state 4
@@ -4508,7 +4528,7 @@ state 132
     (51) expression -> expression . POWER expression
     (54) expression -> expression . CONCAT expression
 
-    THEN            shift and go to state 137
+    THEN            shift and go to state 138
     GT              shift and go to state 41
     LT              shift and go to state 42
     GE              shift and go to state 43
@@ -4570,7 +4590,7 @@ state 134
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -4581,7 +4601,7 @@ state 134
     MINUS           shift and go to state 23
     LPAREN          shift and go to state 24
 
-    expression                     shift and go to state 138
+    expression                     shift and go to state 139
 
 state 135
 
@@ -4609,7 +4629,7 @@ state 135
     (52) expression -> . MINUS expression
     (53) expression -> . LPAREN expression RPAREN
     (54) expression -> . expression CONCAT expression
-    (63) expression -> . ID LBRACKET value RBRACKET
+    (64) expression -> . ID LBRACKET value RBRACKET
 
     NUMBER          shift and go to state 17
     STRING          shift and go to state 18
@@ -4620,9 +4640,48 @@ state 135
     MINUS           shift and go to state 23
     LPAREN          shift and go to state 24
 
-    expression                     shift and go to state 139
+    expression                     shift and go to state 140
 
 state 136
+
+    (57) for_header -> FOR ID ASSIGN expression COMMA expression COMMA . expression DO
+    (7) expression -> . expression GT expression
+    (8) expression -> . expression LT expression
+    (9) expression -> . expression GE expression
+    (10) expression -> . expression LE expression
+    (11) expression -> . expression EQ expression
+    (12) expression -> . expression NE expression
+    (19) expression -> . NUMBER
+    (20) expression -> . STRING
+    (21) expression -> . TRUE
+    (22) expression -> . FALSE
+    (23) expression -> . ID
+    (41) expression -> . expression AND expression
+    (42) expression -> . expression OR expression
+    (43) expression -> . NOT expression
+    (46) expression -> . expression PLUS expression
+    (47) expression -> . expression MINUS expression
+    (48) expression -> . expression TIMES expression
+    (49) expression -> . expression DIVIDE expression
+    (50) expression -> . expression MOD expression
+    (51) expression -> . expression POWER expression
+    (52) expression -> . MINUS expression
+    (53) expression -> . LPAREN expression RPAREN
+    (54) expression -> . expression CONCAT expression
+    (64) expression -> . ID LBRACKET value RBRACKET
+
+    NUMBER          shift and go to state 17
+    STRING          shift and go to state 18
+    TRUE            shift and go to state 19
+    FALSE           shift and go to state 20
+    ID              shift and go to state 21
+    NOT             shift and go to state 22
+    MINUS           shift and go to state 23
+    LPAREN          shift and go to state 24
+
+    expression                     shift and go to state 141
+
+state 137
 
     (56) for_header -> FOR ID ASSIGN expression COMMA expression DO .
 
@@ -4636,7 +4695,7 @@ state 136
     END             reduce using rule 56 (for_header -> FOR ID ASSIGN expression COMMA expression DO .)
 
 
-state 137
+state 138
 
     (18) elseif_clause -> ELSEIF expression THEN . program
     (1) program -> . program statement
@@ -4652,9 +4711,10 @@ state 137
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (24) empty -> .
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
   ! shift/reduce conflict for LOCAL resolved as shift
   ! shift/reduce conflict for ID resolved as shift
@@ -4682,12 +4742,12 @@ state 137
   ! WHILE           [ reduce using rule 24 (empty -> .) ]
   ! FOR             [ reduce using rule 24 (empty -> .) ]
 
-    program                        shift and go to state 140
+    program                        shift and go to state 142
     statement                      shift and go to state 2
     empty                          shift and go to state 3
     for_header                     shift and go to state 10
 
-state 138
+state 139
 
     (26) statement -> FUNCTION ID LPAREN param_list RPAREN program RETURN expression . END
     (7) expression -> expression . GT expression
@@ -4706,44 +4766,7 @@ state 138
     (51) expression -> expression . POWER expression
     (54) expression -> expression . CONCAT expression
 
-    END             shift and go to state 141
-    GT              shift and go to state 41
-    LT              shift and go to state 42
-    GE              shift and go to state 43
-    LE              shift and go to state 44
-    EQ              shift and go to state 45
-    NE              shift and go to state 46
-    AND             shift and go to state 47
-    OR              shift and go to state 48
-    PLUS            shift and go to state 49
-    MINUS           shift and go to state 50
-    TIMES           shift and go to state 51
-    DIVIDE          shift and go to state 52
-    MOD             shift and go to state 53
-    POWER           shift and go to state 54
-    CONCAT          shift and go to state 55
-
-
-state 139
-
-    (27) statement -> FUNCTION ID LPAREN param_list RPAREN empty RETURN expression . END
-    (7) expression -> expression . GT expression
-    (8) expression -> expression . LT expression
-    (9) expression -> expression . GE expression
-    (10) expression -> expression . LE expression
-    (11) expression -> expression . EQ expression
-    (12) expression -> expression . NE expression
-    (41) expression -> expression . AND expression
-    (42) expression -> expression . OR expression
-    (46) expression -> expression . PLUS expression
-    (47) expression -> expression . MINUS expression
-    (48) expression -> expression . TIMES expression
-    (49) expression -> expression . DIVIDE expression
-    (50) expression -> expression . MOD expression
-    (51) expression -> expression . POWER expression
-    (54) expression -> expression . CONCAT expression
-
-    END             shift and go to state 142
+    END             shift and go to state 143
     GT              shift and go to state 41
     LT              shift and go to state 42
     GE              shift and go to state 43
@@ -4763,6 +4786,80 @@ state 139
 
 state 140
 
+    (27) statement -> FUNCTION ID LPAREN param_list RPAREN empty RETURN expression . END
+    (7) expression -> expression . GT expression
+    (8) expression -> expression . LT expression
+    (9) expression -> expression . GE expression
+    (10) expression -> expression . LE expression
+    (11) expression -> expression . EQ expression
+    (12) expression -> expression . NE expression
+    (41) expression -> expression . AND expression
+    (42) expression -> expression . OR expression
+    (46) expression -> expression . PLUS expression
+    (47) expression -> expression . MINUS expression
+    (48) expression -> expression . TIMES expression
+    (49) expression -> expression . DIVIDE expression
+    (50) expression -> expression . MOD expression
+    (51) expression -> expression . POWER expression
+    (54) expression -> expression . CONCAT expression
+
+    END             shift and go to state 144
+    GT              shift and go to state 41
+    LT              shift and go to state 42
+    GE              shift and go to state 43
+    LE              shift and go to state 44
+    EQ              shift and go to state 45
+    NE              shift and go to state 46
+    AND             shift and go to state 47
+    OR              shift and go to state 48
+    PLUS            shift and go to state 49
+    MINUS           shift and go to state 50
+    TIMES           shift and go to state 51
+    DIVIDE          shift and go to state 52
+    MOD             shift and go to state 53
+    POWER           shift and go to state 54
+    CONCAT          shift and go to state 55
+
+
+state 141
+
+    (57) for_header -> FOR ID ASSIGN expression COMMA expression COMMA expression . DO
+    (7) expression -> expression . GT expression
+    (8) expression -> expression . LT expression
+    (9) expression -> expression . GE expression
+    (10) expression -> expression . LE expression
+    (11) expression -> expression . EQ expression
+    (12) expression -> expression . NE expression
+    (41) expression -> expression . AND expression
+    (42) expression -> expression . OR expression
+    (46) expression -> expression . PLUS expression
+    (47) expression -> expression . MINUS expression
+    (48) expression -> expression . TIMES expression
+    (49) expression -> expression . DIVIDE expression
+    (50) expression -> expression . MOD expression
+    (51) expression -> expression . POWER expression
+    (54) expression -> expression . CONCAT expression
+
+    DO              shift and go to state 145
+    GT              shift and go to state 41
+    LT              shift and go to state 42
+    GE              shift and go to state 43
+    LE              shift and go to state 44
+    EQ              shift and go to state 45
+    NE              shift and go to state 46
+    AND             shift and go to state 47
+    OR              shift and go to state 48
+    PLUS            shift and go to state 49
+    MINUS           shift and go to state 50
+    TIMES           shift and go to state 51
+    DIVIDE          shift and go to state 52
+    MOD             shift and go to state 53
+    POWER           shift and go to state 54
+    CONCAT          shift and go to state 55
+
+
+state 142
+
     (18) elseif_clause -> ELSEIF expression THEN program .
     (1) program -> program . statement
     (4) statement -> . LOCAL ID ASSIGN value
@@ -4775,8 +4872,9 @@ state 140
     (35) statement -> . ID ASSIGN LBRACE value_list RBRACE
     (44) statement -> . BREAK
     (55) statement -> . WHILE expression DO program END
-    (57) statement -> . for_header program END
+    (58) statement -> . for_header program END
     (56) for_header -> . FOR ID ASSIGN expression COMMA expression DO
+    (57) for_header -> . FOR ID ASSIGN expression COMMA expression COMMA expression DO
 
     ELSE            reduce using rule 18 (elseif_clause -> ELSEIF expression THEN program .)
     ELSEIF          reduce using rule 18 (elseif_clause -> ELSEIF expression THEN program .)
@@ -4792,7 +4890,7 @@ state 140
     statement                      shift and go to state 12
     for_header                     shift and go to state 10
 
-state 141
+state 143
 
     (26) statement -> FUNCTION ID LPAREN param_list RPAREN program RETURN expression END .
 
@@ -4810,7 +4908,7 @@ state 141
     RETURN          reduce using rule 26 (statement -> FUNCTION ID LPAREN param_list RPAREN program RETURN expression END .)
 
 
-state 142
+state 144
 
     (27) statement -> FUNCTION ID LPAREN param_list RPAREN empty RETURN expression END .
 
@@ -4826,6 +4924,20 @@ state 142
     ELSE            reduce using rule 27 (statement -> FUNCTION ID LPAREN param_list RPAREN empty RETURN expression END .)
     ELSEIF          reduce using rule 27 (statement -> FUNCTION ID LPAREN param_list RPAREN empty RETURN expression END .)
     RETURN          reduce using rule 27 (statement -> FUNCTION ID LPAREN param_list RPAREN empty RETURN expression END .)
+
+
+state 145
+
+    (57) for_header -> FOR ID ASSIGN expression COMMA expression COMMA expression DO .
+
+    LOCAL           reduce using rule 57 (for_header -> FOR ID ASSIGN expression COMMA expression COMMA expression DO .)
+    ID              reduce using rule 57 (for_header -> FOR ID ASSIGN expression COMMA expression COMMA expression DO .)
+    IF              reduce using rule 57 (for_header -> FOR ID ASSIGN expression COMMA expression COMMA expression DO .)
+    FUNCTION        reduce using rule 57 (for_header -> FOR ID ASSIGN expression COMMA expression COMMA expression DO .)
+    BREAK           reduce using rule 57 (for_header -> FOR ID ASSIGN expression COMMA expression COMMA expression DO .)
+    WHILE           reduce using rule 57 (for_header -> FOR ID ASSIGN expression COMMA expression COMMA expression DO .)
+    FOR             reduce using rule 57 (for_header -> FOR ID ASSIGN expression COMMA expression COMMA expression DO .)
+    END             reduce using rule 57 (for_header -> FOR ID ASSIGN expression COMMA expression COMMA expression DO .)
 
 WARNING: 
 WARNING: Conflicts:
@@ -4888,13 +5000,13 @@ WARNING: shift/reduce conflict for BREAK in state 122 resolved as shift
 WARNING: shift/reduce conflict for WHILE in state 122 resolved as shift
 WARNING: shift/reduce conflict for FOR in state 122 resolved as shift
 WARNING: shift/reduce conflict for RETURN in state 126 resolved as shift
-WARNING: shift/reduce conflict for LOCAL in state 137 resolved as shift
-WARNING: shift/reduce conflict for ID in state 137 resolved as shift
-WARNING: shift/reduce conflict for IF in state 137 resolved as shift
-WARNING: shift/reduce conflict for FUNCTION in state 137 resolved as shift
-WARNING: shift/reduce conflict for BREAK in state 137 resolved as shift
-WARNING: shift/reduce conflict for WHILE in state 137 resolved as shift
-WARNING: shift/reduce conflict for FOR in state 137 resolved as shift
+WARNING: shift/reduce conflict for LOCAL in state 138 resolved as shift
+WARNING: shift/reduce conflict for ID in state 138 resolved as shift
+WARNING: shift/reduce conflict for IF in state 138 resolved as shift
+WARNING: shift/reduce conflict for FUNCTION in state 138 resolved as shift
+WARNING: shift/reduce conflict for BREAK in state 138 resolved as shift
+WARNING: shift/reduce conflict for WHILE in state 138 resolved as shift
+WARNING: shift/reduce conflict for FOR in state 138 resolved as shift
 WARNING: reduce/reduce conflict in state 71 resolved using rule (value_list -> empty)
 WARNING: rejected rule (table_fields -> empty) in state 71
 WARNING: reduce/reduce conflict in state 116 resolved using rule (array_access -> ID LBRACKET value RBRACKET)

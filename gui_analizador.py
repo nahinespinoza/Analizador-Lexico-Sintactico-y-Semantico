@@ -60,58 +60,52 @@ class AnalizadorGUI:
         if not codigo:
             messagebox.showwarning("Advertencia", "Por favor ingresa código Lua para analizar.")
             return
-        
+
         self.result_text.delete("1.0", tk.END)
         self.result_text.insert(tk.END, "🚀 INICIANDO ANÁLISIS COMPLETO...\n\n")
         self.status_var.set("Analizando...")
         self.root.update()
-        
+
         try:
             old_stdout = sys.stdout
             sys.stdout = mystdout = StringIO()
-            
-            # Reseteos
+
+            # Reseteos (igual que main.py)
             ERRORS.clear()
             sem.reset_semantico()
-            
-            # === ANÁLISIS LÉXICO ===
-            self.result_text.insert(tk.END, "📝 --- ANÁLISIS LÉXICO ---\n")
-            analizar(codigo, "entrada_usuario.lua")
-            analizar_reservadas(codigo, "entrada_usuario.lua")
-            
+
             # === ANÁLISIS SINTÁCTICO ===
-            self.result_text.insert(tk.END, "\n📋 --- ANÁLISIS SINTÁCTICO ---\n")
-            # Usar el parser global que ya se creó al importar
+            self.result_text.insert(tk.END, "📋 --- ANÁLISIS SINTÁCTICO ---\n")
             parser.parse(codigo, lexer=lexer)
-            
+
             if ERRORS:
                 self.result_text.insert(tk.END, f"❌ Errores Sintácticos encontrados: {len(ERRORS)}\n")
                 for e in ERRORS:
                     self.result_text.insert(tk.END, f"   {e}\n")
             else:
                 self.result_text.insert(tk.END, "✅ Sintaxis correcta\n")
-            
+
             # === ANÁLISIS SEMÁNTICO ===
             self.result_text.insert(tk.END, "\n🔍 --- ANÁLISIS SEMÁNTICO ---\n")
             sem.generar_log_semantico(codigo, usuario="gui_usuario")
-            
+
             if sem.SEMANTIC_ERRORS:
                 self.result_text.insert(tk.END, f"⚠️ Errores Semánticos encontrados: {len(sem.SEMANTIC_ERRORS)}\n")
                 for e in sem.SEMANTIC_ERRORS:
                     self.result_text.insert(tk.END, f"   {e}\n")
             else:
                 self.result_text.insert(tk.END, "✅ Semántica correcta\n")
-            
+
             sys.stdout = old_stdout
             output = mystdout.getvalue()
             if output.strip():
                 self.result_text.insert(tk.END, f"\n📄 --- SALIDA ADICIONAL ---\n{output}")
-            
+
             self.result_text.insert(tk.END, "\n🎉 === ANÁLISIS FINALIZADO ===\n")
             generar_log_sintactico(codigo, usuario="gui")
-            
+
             messagebox.showinfo("Éxito", "Análisis completado correctamente.")
-            
+
         except Exception as e:
             self.result_text.insert(tk.END, f"\n❌ Error durante el análisis: {str(e)}\n")
             import traceback
